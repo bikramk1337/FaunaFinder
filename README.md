@@ -7,6 +7,7 @@ Fauna Finder is an innovative mobile application aimed at enhancing the wildlife
 ## Components
 The project is divided into several submodules, each focusing on a specific aspect of the application:
 
+- **FF-ImageDS**: repo to create Image Dataset.
 - **Mobile App**: A React Native application providing the user interface for image capture and interaction with the AI.
 - **Image Classification**: A module using TensorFlow to identify wildlife from user-uploaded images.
 - **Conversational AI**: A Large Language Model providing real-time information and interaction to users.
