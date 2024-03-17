@@ -1,1 +1,8 @@
 Generic single-database configuration.
+
+To generate migrations and upgrade head using alembic run the following commands (assuming database and backend containers are running) :
+
+```sh
+docker exec ff-backend alembic revision --autogenerate -m "Migration description" 
+docker exec ff-backend alembic upgrade head
+```
