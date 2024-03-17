@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "app"
+version = "0.1.0"
+description = ""
+authors = ["Bikram Karki <bikramk1337@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.109.1"
+pydantic = ">2.0"
+uvicorn = {extras = ["standard"], version = "^0.24.0.post1"}
+psycopg = {extras = ["binary"], version = "^3.1.13"}
+sqlmodel = "^0.0.16"
+pydantic-settings = "^2.2.1"
+
+[tool.poetry.group.dev.dependencies]
+alembic = "^1.13.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
