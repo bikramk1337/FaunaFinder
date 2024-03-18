@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,macos,linux,dotenv,react,node,git
 
 ### dotenv ###
-.env
+# .env
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
