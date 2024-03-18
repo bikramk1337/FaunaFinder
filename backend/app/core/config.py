@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     DOMAIN: str
     SECRET_KEY: str
+    # Access Token expires in 7 days
+    ACCESS_TOKEN_EXPIRE: int = 7
 
     PROJECT_NAME: str
     POSTGRES_SERVER: str
@@ -50,6 +52,9 @@ class Settings(BaseSettings):
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB,
         )
+    
+    SUPERUSER_EMAIL: str
+    SUPERUSER_PASSWORD: str
 
 
 settings = Settings()

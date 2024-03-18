@@ -14,4 +14,8 @@ RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi
 
 COPY ./app /app/app
+
+# Set the PATH to include the Poetry-managed Python environment
+ENV PYTHONPATH="/app/app:${PYTHONPATH}"
+
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]

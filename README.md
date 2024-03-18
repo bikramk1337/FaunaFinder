@@ -22,10 +22,14 @@ git clone --recursive https://github.com/bikramk1337/faunafinder.git
 ```
 
 ### Prerequisites
-- #TODO
+- Docker
 
-### Installation
-1. **...**
+## Installation
+### Backend
+Just run the build script
+```sh
+sh build.sh
+```
    
 
 ## Usage
