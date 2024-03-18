@@ -28,6 +28,7 @@ class Settings(BaseSettings):
 
     API_V1_STR: str = "/api/v1"
     DOMAIN: str
+    SECRET_KEY: str
 
     PROJECT_NAME: str
     POSTGRES_SERVER: str
@@ -35,6 +36,8 @@ class Settings(BaseSettings):
     POSTGRES_DB: str 
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
+
+    PASSWORD_RESET_TOKEN_EXPIRE_HOURS: int = 1
 
     @computed_field  # type: ignore[misc]
     @property
