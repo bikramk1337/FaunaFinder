@@ -55,6 +55,7 @@ class Settings(BaseSettings):
     
     SUPERUSER_EMAIL: str
     SUPERUSER_PASSWORD: str
+    USER_SIGNUP: bool = True
 
 
 settings = Settings()

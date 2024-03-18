@@ -36,7 +36,7 @@ class UserBase(SQLModel):
 class UserCreate(UserBase):
     password: str
 
-class UserRegister(SQLModel):
+class UserSignUp(SQLModel):
     email: str
     password: str
     full_name: str | None = None
