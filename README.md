@@ -22,10 +22,14 @@ git clone --recursive https://github.com/bikramk1337/faunafinder.git
 ```
 
 ### Prerequisites
-- #TODO
+- Docker
 
-### Installation
-1. **...**
+## Installation
+### Backend
+Just run the build script
+```sh
+sh build.sh
+```
    
 
 ## Usage
@@ -38,6 +42,17 @@ git clone --recursive https://github.com/bikramk1337/faunafinder.git
 - **Dev**: Integration branch for features before they are tested and moved to Main.
 - **ff_feature_name**: Feature-specific branches to be merged back into Dev branch.
 
+### Commit Messages 
+Please follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) 
+The commit message should be structured as follows:
+
+```sh 
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
 
 
 ## Testing
