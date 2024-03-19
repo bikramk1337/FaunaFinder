@@ -1,3 +1,5 @@
+import random
+import string
 from collections.abc import Generator
 from typing import Annotated
 from datetime import datetime, timedelta, timezone
@@ -7,12 +9,12 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import ValidationError
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 from app.core import security
 from app.core.config import settings
 from app.db.db import engine
-from app.db.models import TokenPayload, User, UserType
+from app.db.models import TokenPayload, User, UserType, EmailVerification
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
@@ -76,3 +78,16 @@ def verify_password_reset_token(token: str) -> str | None:
         return str(decoded_token["sub"])
     except JWTError:
         return None
+
+def generate_verification_code(session: Session, user_id: int) -> str:
+    code = ''.join(random.choices(string.digits, k=6))
+
+    email_verification = EmailVerification(
+        user_id=user_id,
+        code=code,
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=1)
+    )
+    session.add(email_verification)
+    session.commit()
+
+    return code
