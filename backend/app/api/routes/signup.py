@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import select
+from sqlmodel import select, delete
 
 from app.core.config import settings
 from app.db import crud
@@ -89,4 +89,31 @@ def verify_email(session: SessionDep, email: str, code: str) -> Token:
             user.id, expires_delta=access_token_expires
         )
     )
+
+@router.post("/resend-verification-code", response_model=Message)
+def resend_verification_code(session: SessionDep, email: str) -> Any:
+    """
+    Resend verification code to the user's email.
+    """
+    user = crud.get_user_by_email(session=session, email=email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if user.email_verified:
+        raise HTTPException(status_code=400, detail="Email already verified")
+
+    # Delete existing verification codes for the user
+    session.exec(
+        delete(EmailVerification)
+        .where(EmailVerification.user_id == user.id)
+    )
+
+    # Generate a new verification code
+    verification_code = generate_verification_code(session, user.id)
+    print(verification_code)
+
+    # TODO: Send the new verification code to the user's email
+    # send_verification_email(user.email, verification_code)
+
+    return Message(message="Verification code resent successfully")
 
