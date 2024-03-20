@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify your Account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 20px;
+        }
+        .divider {
+            border-top: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333333;
+            font-size: 24px;
+            margin-top: 0;
+        }
+        p {
+            color: #666666;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .verification-code {
+            display: inline-block;
+            background-color: #f1f1f1;
+            color: #333333;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .footer {
+            margin-top: 40px;
+            color: #999999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.gnu.org/graphics/heckert_gnu.transp.small.png" alt="Fauna Finder Logo" class="logo">
+        <div class="divider"></div>
+        <h1>Welcome to Fauna Finder</h1>
+        <p>Thank you for signing up. Please enter this code to complete your registration.</p>
+        <div class="verification-code">{{ verification_code }}</div>
+        <p>Your verification code expires after 60 minutes. If you didnot request this code, you can ignore this email.</p>
+        <div class="divider"></div>
+        <div class="footer">
+            &copy; 2024 Fauna Finder
+        </div>
+    </div>
+</body>
+</html>

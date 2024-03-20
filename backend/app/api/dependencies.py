@@ -3,9 +3,11 @@ import string
 from collections.abc import Generator
 from typing import Annotated
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from jinja2 import Environment, FileSystemLoader
 
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import ValidationError
@@ -93,6 +95,27 @@ def generate_verification_code(session: Session, user_id: int) -> str:
     session.commit()
 
     return code
+
+def send_verification_code(email: str, verification_code: str, background_tasks: BackgroundTasks):
+    """
+    Send the verification code to the user's email using an HTML template.
+    """
+    # Load the HTML template
+     # Set up Jinja2 template environment
+    template_dir = Path("app/templates")
+    print(template_dir)
+    env = Environment(loader=FileSystemLoader(template_dir))
+    template = env.get_template("verification_email.html")
+
+    email_content = template.render(verification_code=verification_code)
+
+    # Send the verification code via email using the HTML template
+    email_data = EmailSchema(
+        subject="Account Verification",
+        recipients=[email],
+        body=email_content,
+    )
+    background_tasks.add_task(send_mail, email_data)
 
 async def send_mail(email_data: EmailSchema) -> None:
     message = MessageSchema(

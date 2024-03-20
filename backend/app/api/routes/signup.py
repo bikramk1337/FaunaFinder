@@ -2,8 +2,7 @@
 from typing import Any, List
 from datetime import datetime, timedelta, timezone
 
-
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from sqlmodel import select, delete
 from fastapi_mail import FastMail
@@ -17,6 +16,7 @@ from app.core.security import create_access_token
 from app.api.dependencies import (
     SessionDep,
     generate_verification_code,
+    send_verification_code,
     send_mail
 )
 from app.db.models import (
@@ -30,7 +30,7 @@ from app.db.models import (
 router = APIRouter()
 
 @router.post("/signup", response_model=Message)
-def sign_up(session: SessionDep, user_in: UserSignUp) -> Any:
+def sign_up(session: SessionDep, user_in: UserSignUp, background_tasks: BackgroundTasks) -> Any:
     """
     New User Sign Up, to be used by user to register themselves.
     """
@@ -40,20 +40,22 @@ def sign_up(session: SessionDep, user_in: UserSignUp) -> Any:
             detail="Users are forbidden to Sign Up in this server. \
                 Please contact your Administrator!",
         )
+    
     user = crud.get_user_by_email(session=session, email=user_in.email)
     if user:
         raise HTTPException(
             status_code=400,
             detail="The user with this email currently exists in the system.",
         )
+    
     user_create = UserCreate.from_orm(user_in)
     user = crud.create_user(session=session, user_create=user_create)
 
     verification_code = generate_verification_code(session, user.id)
     print(verification_code)
 
-    # TODO: Send the verification code to the user's email
-    # send_verification_email(user.email, verification_code)
+    # Send the verification code to the user's email
+    send_verification_code(user.email, verification_code, background_tasks)
 
     return Message(message="Verification code sent Successfully")
 
@@ -96,7 +98,7 @@ def verify_email(session: SessionDep, email: str, code: str) -> Token:
     )
 
 @router.post("/signup/resend-verification-code", response_model=Message)
-def resend_verification_code(session: SessionDep, email: str) -> Any:
+def resend_verification_code(session: SessionDep, email: str, background_tasks: BackgroundTasks) -> Any:
     """
     Resend verification code to the user's email.
     """
@@ -117,8 +119,8 @@ def resend_verification_code(session: SessionDep, email: str) -> Any:
     verification_code = generate_verification_code(session, user.id)
     print(verification_code)
 
-    # TODO: Send the new verification code to the user's email
-    # send_verification_email(user.email, verification_code)
+    # Send the new verification code to the user's email
+    send_verification_code(user.email, verification_code, background_tasks)
 
     return Message(message="Verification code resent successfully")
 
