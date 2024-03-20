@@ -96,19 +96,19 @@ def generate_verification_code(session: Session, user_id: int) -> str:
 
     return code
 
+def render_html_template(template_name: str, **kwargs) -> str:
+    template_dir = Path("app/templates")
+    env = Environment(loader=FileSystemLoader(template_dir))
+    template = env.get_template(template_name)
+    return template.render(**kwargs)
+
 def send_verification_code(email: str, verification_code: str, background_tasks: BackgroundTasks):
     """
     Send the verification code to the user's email using an HTML template.
     """
-    # Load the HTML template
-     # Set up Jinja2 template environment
-    template_dir = Path("app/templates")
-    print(template_dir)
-    env = Environment(loader=FileSystemLoader(template_dir))
-    template = env.get_template("verification_email.html")
-
-    email_content = template.render(verification_code=verification_code)
-
+    # Render the HTML template
+    email_content = render_html_template("verification_email.html", verification_code=verification_code)
+    
     # Send the verification code via email using the HTML template
     email_data = EmailSchema(
         subject="Account Verification",

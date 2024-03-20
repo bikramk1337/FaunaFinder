@@ -52,7 +52,7 @@ def sign_up(session: SessionDep, user_in: UserSignUp, background_tasks: Backgrou
     user = crud.create_user(session=session, user_create=user_create)
 
     verification_code = generate_verification_code(session, user.id)
-    print(verification_code)
+    # print(verification_code)
 
     # Send the verification code to the user's email
     send_verification_code(user.email, verification_code, background_tasks)
@@ -117,7 +117,7 @@ def resend_verification_code(session: SessionDep, email: str, background_tasks: 
 
     # Generate a new verification code
     verification_code = generate_verification_code(session, user.id)
-    print(verification_code)
+    # print(verification_code)
 
     # Send the new verification code to the user's email
     send_verification_code(user.email, verification_code, background_tasks)
@@ -131,7 +131,7 @@ async def test_email(
     email_data = EmailSchema(
         subject="Welcome to Fauna Finder",
         recipients=[email_to],
-        body="<p>Testing if mailserver works!</p>",
+        body="<p>Fuyoooo! Uncle Roger proud of you Nephew/Niece!</p>",
     )
 
     await send_mail(email_data)
