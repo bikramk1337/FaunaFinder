@@ -1,25 +1,24 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from sqlalchemy import Column, DateTime, func
+from sqlalchemy import Column, DateTime
+import sqlalchemy as sa
 from sqlmodel import Field, SQLModel
 
-# BaseTable to be inherited on database table classes
-# This adds id, and created and updated Timestamps on table 
-class BaseTable(SQLModel):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    created_at: Optional[datetime] = Field(
+
+class TimestampMixin(SQLModel):
+    created_at: datetime | None = Field(
         default=None,
-        sa_column=Column(
-            DateTime(timezone=True), server_default=func.now(), nullable=True
-        )
+        sa_type=sa.DateTime(timezone=True),
+        sa_column_kwargs={"server_default": sa.func.now()},
+        nullable=False,
     )
-    updated_at: Optional[datetime] = Field(
+    updated_at: datetime | None = Field(
         default=None,
-        sa_column=Column(
-            DateTime(timezone=True), onupdate=func.now(), nullable=True
-        )
+        sa_type=sa.DateTime(timezone=True),
+        sa_column_kwargs={"onupdate": sa.func.now(), "server_default": sa.func.now()},
     )
+
 
 class UserType(str, Enum):
     REGULAR = "regular"
@@ -30,6 +29,7 @@ class UserType(str, Enum):
 class UserBase(SQLModel):
     email: str = Field(unique=True, index=True)
     is_active: bool = True
+    email_verified: bool = False
     user_type: UserType = Field(default=UserType.REGULAR)
     full_name: str | None = None
 
@@ -77,5 +77,12 @@ class NewPassword(SQLModel):
     new_password: str   
 
 # Database model, database table inferred from class name
-class User(UserBase, BaseTable, table=True):
+class User(UserBase, TimestampMixin, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
     hashed_password: str
+
+class EmailVerification(TimestampMixin, table=True):
+    id: int = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    code: str
+    expires_at: datetime = Field(sa_column=Column(DateTime(timezone=True)))

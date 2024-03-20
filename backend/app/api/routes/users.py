@@ -153,23 +153,3 @@ def get_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
 
     return UsersOut(data=users, count=count)
 
-@router.post("/signup", response_model=UserOut)
-def sign_up(session: SessionDep, user_in: UserSignUp) -> Any:
-    """
-    New User Sign Up, to be used by user to register themselves.
-    """
-    if not settings.USER_SIGNUP:
-        raise HTTPException(
-            status_code=403,
-            detail="Users are forbidden to Sign Up in this server. \
-                Please contact your Administrator!",
-        )
-    user = crud.get_user_by_email(session=session, email=user_in.email)
-    if user:
-        raise HTTPException(
-            status_code=400,
-            detail="The user with this email currently exists in the system.",
-        )
-    user_create = UserCreate.from_orm(user_in)
-    user = crud.create_user(session=session, user_create=user_create)
-    return user

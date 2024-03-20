@@ -18,3 +18,7 @@ def init_db(session: Session) -> None:
 
         )
         user = crud.create_user(session=session, user_create=user_in)
+        user.email_verified = True
+        session.add(user)
+        session.commit()
+        session.refresh(user)
