@@ -10,11 +10,13 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import ValidationError
 from sqlmodel import Session, select
+from fastapi_mail import FastMail, MessageSchema
 
 from app.core import security
 from app.core.config import settings
 from app.db.db import engine
 from app.db.models import TokenPayload, User, UserType, EmailVerification
+from app.db.email_utils import EmailSchema
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
@@ -91,3 +93,18 @@ def generate_verification_code(session: Session, user_id: int) -> str:
     session.commit()
 
     return code
+
+async def send_mail(email_data: EmailSchema) -> None:
+    message = MessageSchema(
+        subject=email_data.subject,
+        recipients=email_data.recipients,
+        body=email_data.body,
+        cc=email_data.cc,
+        bcc=email_data.bcc,
+        attachments=email_data.attachments,
+        subtype="html",
+    )
+
+    fm = FastMail(settings.MAIL_CONFIG)
+
+    await fm.send_message(message)

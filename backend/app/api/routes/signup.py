@@ -1,11 +1,15 @@
 
-from typing import Any
+from typing import Any, List
 from datetime import datetime, timedelta, timezone
 
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import JSONResponse
 from sqlmodel import select, delete
+from fastapi_mail import FastMail
+from pydantic import ValidationError
 
+from app.db.email_utils import EmailSchema
 from app.core.config import settings
 from app.db import crud
 from app.core.security import create_access_token
@@ -13,6 +17,7 @@ from app.core.security import create_access_token
 from app.api.dependencies import (
     SessionDep,
     generate_verification_code,
+    send_mail
 )
 from app.db.models import (
     UserCreate,
@@ -52,7 +57,7 @@ def sign_up(session: SessionDep, user_in: UserSignUp) -> Any:
 
     return Message(message="Verification code sent Successfully")
 
-@router.post("/verify-email")
+@router.post("/signup/verify-email")
 def verify_email(session: SessionDep, email: str, code: str) -> Token:
     user = crud.get_user_by_email(session=session, email=email)
 
@@ -90,7 +95,7 @@ def verify_email(session: SessionDep, email: str, code: str) -> Token:
         )
     )
 
-@router.post("/resend-verification-code", response_model=Message)
+@router.post("/signup/resend-verification-code", response_model=Message)
 def resend_verification_code(session: SessionDep, email: str) -> Any:
     """
     Resend verification code to the user's email.
@@ -117,3 +122,16 @@ def resend_verification_code(session: SessionDep, email: str) -> Any:
 
     return Message(message="Verification code resent successfully")
 
+@router.post("/test-email",  response_model=Message)
+async def test_email(
+        email_to: str
+):
+    email_data = EmailSchema(
+        subject="Welcome to Fauna Finder",
+        recipients=[email_to],
+        body="<p>Testing if mailserver works!</p>",
+    )
+
+    await send_mail(email_data)
+    
+    return Message(message="Email sent successfully")
