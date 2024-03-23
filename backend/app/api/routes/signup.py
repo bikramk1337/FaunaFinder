@@ -17,6 +17,7 @@ from app.api.dependencies import (
     SessionDep,
     generate_verification_code,
     send_verification_code,
+    render_html_template,
     send_mail
 )
 from app.db.models import (
@@ -128,10 +129,12 @@ def resend_verification_code(session: SessionDep, email: str, background_tasks: 
 async def test_email(
         email_to: str
 ):
+    email_content = render_html_template("test_email.html")
+
     email_data = EmailSchema(
         subject="Welcome to Fauna Finder",
         recipients=[email_to],
-        body="<p>Fuyoooo! Uncle Roger proud of you Nephew/Niece!</p>",
+        body=email_content,
     )
 
     await send_mail(email_data)
