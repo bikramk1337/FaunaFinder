@@ -5,6 +5,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from app.db.models import SQLModel
+from app.db.fauna import Fauna
 
 from alembic import context
 
