@@ -46,11 +46,11 @@ const FFLayout = (props: Props) => {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: { md: "none" } }}
           >
             <Menu />
           </IconButton>
-          <Box sx={{ mr: 2, display: { xs: "none", sm: "block" } }}>
+          <Box sx={{ mr: 2, display: { xs: "none", md: "block" } }}>
             <Logo size={40} />
           </Box>
           <LogoText variant="h6" />
@@ -59,7 +59,7 @@ const FFLayout = (props: Props) => {
 
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
         aria-label="mailbox folders"
       >
         <FFDrawer
@@ -73,7 +73,7 @@ const FFLayout = (props: Props) => {
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
         }}
       >
         <Toolbar />

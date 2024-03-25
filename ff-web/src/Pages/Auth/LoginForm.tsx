@@ -44,9 +44,10 @@ const LoginForm = (props: Props) => {
           </Button>
         </Box>
         <Box sx={{ mb: 4, textAlign: "center" }}>
-          <Typography>
+          {/* <Typography>
             Don't have an account? <Link to="../signup">Sign up</Link>
-          </Typography>
+          </Typography> */}
+          <Typography>Don't have an account? Contact administrator</Typography>
         </Box>
       </Box>
     </Box>

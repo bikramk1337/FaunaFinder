@@ -21,8 +21,8 @@ const Login = (props: Props) => {
         justifyContent="center"
         alignItems="center"
       >
-        <Logo size={200} />
-        <LogoText variant="h2" />
+        <Logo size={100} />
+        <LogoText variant="h3" />
       </Box>
 
       <Box flexGrow={"1"} textAlign="center" sx={{ width: 400 }}>

@@ -195,7 +195,7 @@ const FFDrawer = (props: Props) => {
           keepMounted: true, // Better open performance on mobile.
         }}
         sx={{
-          display: { xs: "block", sm: "none" },
+          display: { xs: "block", md: "none" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: drawerWidth,
@@ -208,7 +208,7 @@ const FFDrawer = (props: Props) => {
       <Drawer
         variant="permanent"
         sx={{
-          display: { xs: "none", sm: "block" },
+          display: { xs: "none", md: "block" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: drawerWidth,
