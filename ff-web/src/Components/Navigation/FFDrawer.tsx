@@ -1,52 +1,49 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
+import React, { Dispatch } from "react";
 import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MenuIcon from "@mui/icons-material/Menu";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
+
 import {
+  EmojiNatureOutlined,
+  GroupsOutlined,
   Logout,
   SettingsOutlined,
   SpaceDashboardOutlined,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../Hooks/useAuth";
+import { Toolbar } from "@mui/material";
 
 const drawerWidth = 240;
 
-interface Props {}
+interface Props {
+  showDrawer: boolean;
+  handleDrawerClose: () => void;
+  handleDrawerTransitionEnd: () => void;
+}
 
 const FFDrawer = (props: Props) => {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [isClosing, setIsClosing] = React.useState(false);
+  const { showDrawer, handleDrawerClose, handleDrawerTransitionEnd } = props;
 
   const navigate = useNavigate();
+  const { logOut } = useAuth();
 
-  const handleDrawerClose = () => {
-    setIsClosing(true);
-    setMobileOpen(false);
-  };
-
-  const handleDrawerTransitionEnd = () => {
-    setIsClosing(false);
-  };
-
-  const handleDrawerToggle = () => {
-    if (!isClosing) {
-      setMobileOpen(!mobileOpen);
-    }
+  const handleLogOutClick = () => {
+    logOut();
   };
 
   const drawer = (
-    <div>
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="space-between"
+      flexGrow="1"
+    >
       <List>
         <ListItem disablePadding>
           <ListItemButton
@@ -60,7 +57,34 @@ const FFDrawer = (props: Props) => {
             <ListItemText primary={"Dashboard"} />
           </ListItemButton>
         </ListItem>
-        <Divider />
+
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              navigate("users");
+            }}
+          >
+            <ListItemIcon>
+              <GroupsOutlined />
+            </ListItemIcon>
+            <ListItemText primary={"Users"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              navigate("species");
+            }}
+          >
+            <ListItemIcon>
+              <EmojiNatureOutlined />
+            </ListItemIcon>
+            <ListItemText primary={"Species"} />
+          </ListItemButton>
+        </ListItem>
+      </List>
+
+      <List>
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
@@ -73,13 +97,9 @@ const FFDrawer = (props: Props) => {
             <ListItemText primary={"Settings"} />
           </ListItemButton>
         </ListItem>
-        <Divider />
+
         <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              navigate("/auth");
-            }}
-          >
+          <ListItemButton onClick={handleLogOutClick}>
             <ListItemIcon>
               <Logout />
             </ListItemIcon>
@@ -87,16 +107,88 @@ const FFDrawer = (props: Props) => {
           </ListItemButton>
         </ListItem>
       </List>
+    </Box>
+  );
 
-      <List></List>
-    </div>
+  const drawerMobile = (
+    <List>
+      <ListItem disablePadding>
+        <ListItemButton
+          onClick={() => {
+            navigate("dashboard");
+            handleDrawerClose();
+          }}
+        >
+          <ListItemIcon>
+            <SpaceDashboardOutlined />
+          </ListItemIcon>
+          <ListItemText primary={"Dashboard"} />
+        </ListItemButton>
+      </ListItem>
+      <Divider />
+      <ListItem disablePadding>
+        <ListItemButton
+          onClick={() => {
+            navigate("users");
+            handleDrawerClose();
+          }}
+        >
+          <ListItemIcon>
+            <GroupsOutlined />
+          </ListItemIcon>
+          <ListItemText primary={"Users"} />
+        </ListItemButton>
+      </ListItem>
+      <Divider />
+      <ListItem disablePadding>
+        <ListItemButton
+          onClick={() => {
+            navigate("species");
+            handleDrawerClose();
+          }}
+        >
+          <ListItemIcon>
+            <EmojiNatureOutlined />
+          </ListItemIcon>
+          <ListItemText primary={"Species"} />
+        </ListItemButton>
+      </ListItem>
+      <Divider />
+      <ListItem disablePadding>
+        <ListItemButton
+          onClick={() => {
+            navigate("settings");
+            handleDrawerClose();
+          }}
+        >
+          <ListItemIcon>
+            <SettingsOutlined />
+          </ListItemIcon>
+          <ListItemText primary={"Settings"} />
+        </ListItemButton>
+      </ListItem>
+      <Divider />
+      <ListItem disablePadding>
+        <ListItemButton
+          onClick={() => {
+            navigate("/auth");
+            handleDrawerClose();
+          }}
+        >
+          <ListItemIcon>
+            <Logout />
+          </ListItemIcon>
+          <ListItemText primary={"Logout"} />
+        </ListItemButton>
+      </ListItem>
+    </List>
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", bgcolor: "yellow" }}>
       <Drawer
         variant="temporary"
-        open={mobileOpen}
+        open={showDrawer}
         onTransitionEnd={handleDrawerTransitionEnd}
         onClose={handleDrawerClose}
         ModalProps={{
@@ -110,7 +202,8 @@ const FFDrawer = (props: Props) => {
           },
         }}
       >
-        {drawer}
+        <Toolbar />
+        {drawerMobile}
       </Drawer>
       <Drawer
         variant="permanent"
@@ -123,6 +216,7 @@ const FFDrawer = (props: Props) => {
         }}
         open
       >
+        <Toolbar />
         {drawer}
       </Drawer>
     </Box>

@@ -1,16 +1,9 @@
-import {
-  AppBar,
-  Box,
-  CssBaseline,
-  IconButton,
-  MenuItem,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import React, { ReactNode, useState } from "react";
+import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
+import React, { useState } from "react";
 import { FFDrawer } from "../Navigation";
 import { Outlet } from "react-router-dom";
 import { Menu } from "@mui/icons-material";
+import { Logo, LogoText } from "../Logo";
 
 const drawerWidth = 240;
 
@@ -18,16 +11,33 @@ type Props = {};
 
 const FFLayout = (props: Props) => {
   const [showDrawer, setShowDrawer] = useState(false);
+  const [isClosing, setIsClosing] = React.useState(false);
 
-  const handleDrawerToggle = () => {};
+  const handleDrawerToggle = () => {
+    if (!isClosing) {
+      setShowDrawer(!showDrawer);
+    }
+  };
+
+  const handleDrawerClose = () => {
+    setIsClosing(true);
+    setShowDrawer(false);
+  };
+
+  const handleDrawerTransitionEnd = () => {
+    setIsClosing(false);
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar
         position="fixed"
+        variant="outlined"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          bgcolor: "white",
+          // borderBottom: 1,
+          // borderBottomColor: "grey.500",
         }}
       >
         <Toolbar>
@@ -40,17 +50,23 @@ const FFLayout = (props: Props) => {
           >
             <Menu />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Fauna Finder
-          </Typography>
+          <Box sx={{ mr: 2, display: { xs: "none", sm: "block" } }}>
+            <Logo size={40} />
+          </Box>
+          <LogoText variant="h6" />
         </Toolbar>
       </AppBar>
+
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
-        <FFDrawer />
+        <FFDrawer
+          showDrawer={showDrawer}
+          handleDrawerClose={handleDrawerClose}
+          handleDrawerTransitionEnd={handleDrawerTransitionEnd}
+        />
       </Box>
       <Box
         component="main"

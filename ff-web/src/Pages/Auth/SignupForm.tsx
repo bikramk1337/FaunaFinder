@@ -21,8 +21,17 @@ const SignupForm = (props: Props) => {
         </FormControl>
       </Box>
       <Box>
-        <FormControl fullWidth sx={{ height: 54, mb: 4 }}>
+        <FormControl fullWidth sx={{ height: 54, mb: 2 }}>
           <TextField id="password" variant="outlined" label="Password" />
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl fullWidth sx={{ height: 54, mb: 4 }}>
+          <TextField
+            id="confirmPassword"
+            variant="outlined"
+            label="Confirm password"
+          />
         </FormControl>
       </Box>
       <Box>

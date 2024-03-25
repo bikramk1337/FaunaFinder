@@ -6,12 +6,17 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  isLoggedIn: true,
+  isLoggedIn: false,
 };
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setIsLoggedIn: (state) => {
+      return {
+        isLoggedIn: true,
+      };
+    },
     setIsLoggedOut: (state) => {
       return {
         isLoggedIn: false,
@@ -20,7 +25,7 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setIsLoggedOut } = authSlice.actions;
+export const { setIsLoggedIn, setIsLoggedOut } = authSlice.actions;
 
 export const selectIsLoggedIn = (state: RootState) => state.auth.isLoggedIn;
 

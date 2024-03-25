@@ -12,7 +12,7 @@ import {
   useScrollTrigger,
 } from "@mui/material";
 import React from "react";
-import Logo from "../../Components/Logo";
+import { Logo } from "../../Components/Logo";
 import { AccountCircle, GitHub } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
@@ -49,7 +49,7 @@ const Landing = (props: Props) => {
             width="100%"
           >
             <Box>
-              <Logo />
+              <Logo size={40} />
             </Box>
 
             <Box>
@@ -209,6 +209,7 @@ const Landing = (props: Props) => {
           component="h1"
           gutterBottom
           textAlign={"center"}
+          fontFamily={"Madimi One"}
         >
           Fauna Finder
         </Typography>

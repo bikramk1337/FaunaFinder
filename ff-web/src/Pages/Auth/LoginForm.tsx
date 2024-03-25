@@ -3,20 +3,21 @@ import {
   Button,
   Divider,
   FormControl,
-  FormHelperText,
-  Input,
-  InputLabel,
-  Paper,
   TextField,
   Typography,
 } from "@mui/material";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import useAuth from "../../Hooks/useAuth";
 
 type Props = {};
 
 const LoginForm = (props: Props) => {
-  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const handleLoginClick = () => {
+    login();
+  };
   return (
     <Box>
       <Box>
@@ -37,9 +38,7 @@ const LoginForm = (props: Props) => {
             fullWidth
             sx={{ height: 54, mb: 2 }}
             disableElevation
-            onClick={() => {
-              navigate("/admin");
-            }}
+            onClick={handleLoginClick}
           >
             Login
           </Button>
@@ -49,21 +48,6 @@ const LoginForm = (props: Props) => {
             Don't have an account? <Link to="../signup">Sign up</Link>
           </Typography>
         </Box>
-      </Box>
-
-      <Box sx={{ mb: 4 }}>
-        <Divider>OR</Divider>
-      </Box>
-
-      <Box sx={{ mb: 2 }}>
-        <Button sx={{ height: 54 }} variant="outlined" size="large" fullWidth>
-          Login with google
-        </Button>
-      </Box>
-      <Box sx={{ mb: 4 }}>
-        <Button sx={{ height: 54 }} variant="outlined" size="large" fullWidth>
-          Login with github
-        </Button>
       </Box>
     </Box>
   );
