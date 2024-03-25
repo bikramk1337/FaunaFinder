@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../Redux/store";
 import {
@@ -15,11 +15,15 @@ const useAuth = () => {
   const isLoggedIn = useSelector((state: RootState) => selectIsLoggedIn(state));
 
   useEffect(() => {
-    const isLoggedInSaved = localStorage.getItem("isLoggedIn");
-    if (isLoggedInSaved === "true") {
-      dispatch(setIsLoggedIn());
-    } else {
-      dispatch(setIsLoggedOut());
+    try {
+      const isLoggedInSaved = localStorage.getItem("isLoggedIn");
+      if (isLoggedInSaved === "true") {
+        dispatch(setIsLoggedIn());
+      } else {
+        logOut();
+      }
+    } catch (e) {
+      logOut();
     }
   }, []);
 

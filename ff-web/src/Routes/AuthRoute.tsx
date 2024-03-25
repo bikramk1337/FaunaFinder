@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../Redux/store";
 import { selectIsLoggedIn } from "../Redux/Slices/authSlice";
+import useAuth from "../Hooks/useAuth";
 
 type Props = {
   children: ReactElement;
@@ -10,7 +11,7 @@ type Props = {
 
 const AuthRoute = (props: Props) => {
   const { children } = props;
-  const isLoggedIn = useSelector((state: RootState) => selectIsLoggedIn(state));
+  const { isLoggedIn } = useAuth();
 
   if (!isLoggedIn) {
     return <Navigate to="/auth/login" />;

@@ -16,6 +16,8 @@ import Login from "./Pages/Auth/Login";
 import { AuthRoute } from "./Routes";
 import Users from "./Pages/Users/Users";
 import Species from "./Pages/Species/Species";
+import UsersGeneral from "./Pages/Users/UsersGeneral";
+import UsersAdmin from "./Pages/Users/UsersAdmin";
 
 function App() {
   return (
@@ -38,7 +40,12 @@ function App() {
         >
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="users" element={<Users />} />
+          <Route path="users" element={<Users />}>
+            <Route index element={<Navigate to="general" />} />
+            <Route path="general-users" element={<UsersGeneral />} />
+            <Route path="admin-users" element={<UsersAdmin />} />
+            <Route path="*" element={<Navigate to="general-users" />} />
+          </Route>
           <Route path="species" element={<Species />} />
           <Route path="settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="dashboard" />} />

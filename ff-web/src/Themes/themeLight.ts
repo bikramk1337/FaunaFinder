@@ -7,7 +7,7 @@ export const themeLight = createTheme({
     },
     secondary: {
       // main: "#aba9b3",
-      main: "#b7ff6f",
+      main: "#6f6fff",
     },
   },
   typography: {
