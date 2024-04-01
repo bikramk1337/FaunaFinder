@@ -1,7 +1,11 @@
-from sqlmodel import SQLModel, Field
+from typing import Optional, TYPE_CHECKING
+
+from sqlmodel import SQLModel, Field, Relationship
+
+if TYPE_CHECKING:
+    from app.db.models import User
 
 from app.db.models import TimestampMixin
-
 
 # SQLModel Classes for Fauna Lookup table
 class FaunaBase(SQLModel):
@@ -42,6 +46,18 @@ class FaunasOut(SQLModel):
     data: list[FaunaOut]
     count: int
 
+class ClassificationBase(SQLModel):
+    image_url: str
+    prediction: str
+
+class ClassificationOut(ClassificationBase):
+    id: int
+
 # Database Model
 class Fauna(FaunaBase, TimestampMixin, table=True):
     id: int = Field(default=None, primary_key=True)
+
+class ClassificationHistory(ClassificationBase, TimestampMixin, table=True):
+    id: int = Field(default=None, primary_key=True)
+    user_id: int | None = Field(default=None, foreign_key="user.id", nullable=False)
+    user: Optional["User"] = Relationship(back_populates="classification_history")
