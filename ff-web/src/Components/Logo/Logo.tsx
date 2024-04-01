@@ -30,7 +30,7 @@ const Logo = (props: Props) => {
       >
         <g
           id="SVGRepo_bgCarrier"
-          stroke-width="0"
+          strokeWidth="0"
           transform="translate(0,0), scale(1)"
         >
           <path
@@ -42,10 +42,10 @@ const Logo = (props: Props) => {
         </g>
         <g
           id="SVGRepo_tracerCarrier"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           stroke="#CCCCCC"
-          stroke-width="3.3778440000000005"
+          strokeWidth="3.3778440000000005"
         ></g>
         <g id="SVGRepo_iconCarrier">
           {" "}

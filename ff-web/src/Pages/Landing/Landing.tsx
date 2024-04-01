@@ -13,7 +13,18 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Logo } from "../../Components/Logo";
-import { AccountCircle, GitHub } from "@mui/icons-material";
+import {
+  AccountCircle,
+  Android,
+  Apple,
+  Forest,
+  GitHub,
+  Nature,
+  NaturePeople,
+  Spa,
+  WaterDrop,
+  Yard,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 type Props = {};
@@ -27,11 +38,14 @@ const Landing = (props: Props) => {
   });
 
   return (
-    <Box minHeight="100vh">
+    <Box minHeight="100vh" bgcolor="#dfdfdf">
       <AppBar
-        position="sticky"
+        position="fixed"
         elevation={1}
-        sx={{ bgcolor: "none", backdropFilter: "blur(20px)" }}
+        sx={{
+          bgcolor: "none",
+          // backdropFilter: "blur(20px)",
+        }}
         style={{
           backgroundColor: "transparent",
           // color: trigger ? "white" : "black",
@@ -65,7 +79,7 @@ const Landing = (props: Props) => {
                     );
                   }}
                 >
-                  <GitHub />
+                  <GitHub color="primary" />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Login">
@@ -76,156 +90,162 @@ const Landing = (props: Props) => {
                     navigate("auth/login");
                   }}
                 >
-                  <AccountCircle />
+                  <AccountCircle color="primary" />
                 </IconButton>
               </Tooltip>
             </Box>
           </Box>
         </Toolbar>
       </AppBar>
-      {/* <Container maxWidth={false}> */}
-      {/* <Grid container>
-        <Grid item container xs={12} md={6} bgcolor="#f7f7f7" height="100vh">
-          <Typography variant="h2" component="h1" gutterBottom>
-            Welcome to Fauna Finder
-          </Typography>
-          <Typography variant="body1" component="p" gutterBottom>
-            Releasing in{" "}
-            {Math.round(
-              (new Date("2024-05-17").getTime() - new Date().getTime()) /
-                (1000 * 60 * 60 * 24 * 7)
-            )}{" "}
-            weeks
-          </Typography>
-          <Typography>
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-            accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
-            quae ab illo inventore veritatis et quasi architecto beatae vitae
-            dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
-            aspernatur aut odit aut fugit, sed quia consequuntur magni dolores
-            eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est,
-            qui dolorem ipsum quia dolor sit amet
-          </Typography>
+      <Grid container>
+        <Grid item xs={12} lg={7}>
+          <Box
+            height="100vh"
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent="center"
+            // alignItems="center"
+            sx={{
+              padding: {
+                xs: 10,
+                md: 16,
+                lg: 20,
+              },
+            }}
+            paddingTop={20}
+          >
+            <Typography
+              variant="h2"
+              // component="h1"
+              gutterBottom
+              // textAlign={"center"}
+              fontFamily={"Madimi One"}
+            >
+              Fauna Finder
+            </Typography>
 
-          <Box>
-            <Typography variant="h5" component="h2" gutterBottom>
-              Download Fauna Finder on
+            <Typography variant="subtitle1" gutterBottom mb={10}>
+              Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+              accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
+              quae ab illo inventore veritatis et quasi architecto beatae vitae
+              dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas
             </Typography>
             <Box>
-              <Box sx={{ mb: 2 }}>
-                <Button
-                  sx={{ height: 54 }}
-                  variant="outlined"
-                  size="large"
-                  fullWidth
-                >
-                  App St0re
-                </Button>
-              </Box>
-              <Box sx={{ mb: 4 }}>
-                <Button
-                  sx={{ height: 54 }}
-                  variant="outlined"
-                  size="large"
-                  fullWidth
-                >
-                  Play store
-                </Button>
+              {/* <Typography variant="h5" component="h5" gutterBottom>
+                Available on
+              </Typography> */}
+              <Box>
+                <Grid container spacing={4}>
+                  <Grid item xs={12} lg={6}>
+                    <Button
+                      sx={{ height: 54 }}
+                      variant="contained"
+                      disableElevation
+                      color="secondary"
+                      size="large"
+                      fullWidth
+                      startIcon={<Apple />}
+                    >
+                      App Store
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} lg={6}>
+                    <Button
+                      sx={{ height: 54 }}
+                      variant="contained"
+                      disableElevation
+                      color="secondary"
+                      size="large"
+                      fullWidth
+                      startIcon={<Android />}
+                    >
+                      Play store
+                    </Button>
+                  </Grid>
+                </Grid>
               </Box>
             </Box>
           </Box>
         </Grid>
-        <Grid
-          item
-          container
-          xs={12}
-          md={6}
-          spacing={4}
-          bgcolor="#121212"
-          height="100vh"
-        >
-          <Grid item xs={12} md={6}>
-            <Paper variant="outlined" sx={{ padding: 4 }}>
-              <Typography variant="h5" gutterBottom>
-                Feature 1
-              </Typography>
-              <Typography variant="body1">
-                This is the description of feature 1.
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Paper variant="outlined" sx={{ padding: 4 }}>
-              <Typography variant="h5" gutterBottom>
-                Feature 2
-              </Typography>
-              <Typography variant="body1">
-                This is the description of feature 2.
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Paper variant="outlined" sx={{ padding: 4 }}>
-              <Typography variant="h5" gutterBottom>
-                Feature 3
-              </Typography>
-              <Typography variant="body1">
-                This is the description of feature 3.
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Paper variant="outlined" sx={{ padding: 4 }}>
-              <Typography variant="h5" gutterBottom>
-                Feature 4
-              </Typography>
-              <Typography variant="body1">
-                This is the description of feature 4.
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12}>
-            <Paper variant="outlined" sx={{ padding: 4 }}>
-              <Typography variant="h5" gutterBottom>
-                Feature 5
-              </Typography>
-              <Typography variant="body1">
-                This is the description of feature 5.
-              </Typography>
-            </Paper>
-          </Grid>
+        <Grid item xs={12} lg={5}>
+          <Box
+            sx={{
+              bgcolor: "secondary.main",
+              padding: {
+                xs: 10,
+                md: 16,
+                xl: 20,
+              },
+            }}
+            paddingTop={10}
+            height={"100%"}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Grid container spacing={4}>
+              <Grid item xs={12} lg={12}>
+                <Paper elevation={0} sx={{ padding: 4, bgcolor: "#8989FF" }}>
+                  <Nature fontSize="large" />
+                  <Typography variant="h5" gutterBottom>
+                    Feature 1
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} lg={12}>
+                <Paper elevation={0} sx={{ padding: 4, bgcolor: "#8989FF" }}>
+                  <NaturePeople fontSize="large" />
+                  <Typography variant="h5" gutterBottom>
+                    Feature 2
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} lg={12}>
+                <Paper elevation={0} sx={{ padding: 4, bgcolor: "#8989FF" }}>
+                  <Forest fontSize="large" />
+                  <Typography variant="h5" gutterBottom>
+                    Feature 3
+                  </Typography>
+                </Paper>
+              </Grid>
+              {/* <Grid item xs={12} lg={6}>
+                <Paper elevation={0} sx={{ padding: 4, bgcolor: "#8989FF" }}>
+                  <Spa fontSize="large" />
+                  <Typography variant="h5" gutterBottom>
+                    Feature 2
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} lg={6}>
+                <Paper elevation={0} sx={{ padding: 4, bgcolor: "#8989FF" }}>
+                  <WaterDrop fontSize="large" />
+                  <Typography variant="h5" gutterBottom>
+                    Feature 3
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} lg={6}>
+                <Paper elevation={0} sx={{ padding: 4, bgcolor: "#8989FF" }}>
+                  <Yard fontSize="large" />
+                  <Typography variant="h5" gutterBottom>
+                    Feature 4
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={12}>
+                <Paper elevation={0} sx={{ padding: 4, bgcolor: "#8989FF" }}>
+                  <Typography variant="h5" gutterBottom>
+                    Feature 5
+                  </Typography>
+                  <Typography variant="h5">
+                    This is the description of feature 5.
+                  </Typography>
+                </Paper>
+              </Grid> */}
+            </Grid>
+          </Box>
         </Grid>
-      </Grid> */}
-      {/* </Container> */}
-      <Box
-        height="70vh"
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Typography
-          variant="h2"
-          component="h1"
-          gutterBottom
-          textAlign={"center"}
-          fontFamily={"Madimi One"}
-        >
-          Fauna Finder
-        </Typography>
-        <Typography
-          variant="body1"
-          component="p"
-          gutterBottom
-          textAlign="center"
-        >
-          {Math.round(
-            (new Date("2024-05-17").getTime() - new Date().getTime()) /
-              (1000 * 60 * 60 * 24 * 7)
-          )}{" "}
-          weeks to go
-        </Typography>
-      </Box>
+      </Grid>
     </Box>
   );
 };

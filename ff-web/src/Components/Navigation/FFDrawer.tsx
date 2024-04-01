@@ -15,9 +15,11 @@ import {
   SettingsOutlined,
   SpaceDashboardOutlined,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
 import { Toolbar } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { setIsLoggedOut } from "../../Redux/Slices/authSlice";
 
 const drawerWidth = 240;
 
@@ -29,12 +31,15 @@ interface Props {
 
 const FFDrawer = (props: Props) => {
   const { showDrawer, handleDrawerClose, handleDrawerTransitionEnd } = props;
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
-  const { logOut } = useAuth();
+
+  const location = useLocation();
 
   const handleLogOutClick = () => {
-    logOut();
+    dispatch(setIsLoggedOut());
+    navigate("/");
   };
 
   const drawer = (
@@ -45,8 +50,10 @@ const FFDrawer = (props: Props) => {
       flexGrow="1"
     >
       <List>
-        <ListItem disablePadding>
+        <ListItem>
           <ListItemButton
+            selected={location.pathname.includes("dashboard")}
+            disableRipple
             onClick={() => {
               navigate("dashboard");
             }}
@@ -58,8 +65,10 @@ const FFDrawer = (props: Props) => {
           </ListItemButton>
         </ListItem>
 
-        <ListItem disablePadding>
+        <ListItem>
           <ListItemButton
+            disableRipple
+            selected={location.pathname.includes("users")}
             onClick={() => {
               navigate("users");
             }}
@@ -70,8 +79,10 @@ const FFDrawer = (props: Props) => {
             <ListItemText primary={"Users"} />
           </ListItemButton>
         </ListItem>
-        <ListItem disablePadding>
+        <ListItem>
           <ListItemButton
+            disableRipple
+            selected={location.pathname.includes("species")}
             onClick={() => {
               navigate("species");
             }}
@@ -87,6 +98,7 @@ const FFDrawer = (props: Props) => {
       <List>
         <ListItem disablePadding>
           <ListItemButton
+            disableRipple
             onClick={() => {
               navigate("settings");
             }}
@@ -99,7 +111,7 @@ const FFDrawer = (props: Props) => {
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton onClick={handleLogOutClick}>
+          <ListItemButton disableRipple onClick={handleLogOutClick}>
             <ListItemIcon>
               <Logout />
             </ListItemIcon>

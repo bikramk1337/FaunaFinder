@@ -2,10 +2,12 @@ import { MoreVert } from "@mui/icons-material";
 import { Box, IconButton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React from "react";
+import { useGetUsersQuery } from "../../Redux/Services/userService";
 
 type Props = {};
 
 const UsersGeneral = (props: Props) => {
+  const { data, isLoading, isError } = useGetUsersQuery();
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", flex: 1 },
     { field: "firstName", headerName: "First name", flex: 1 },
