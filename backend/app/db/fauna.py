@@ -52,6 +52,11 @@ class ClassificationBase(SQLModel):
 
 class ClassificationOut(ClassificationBase):
     id: int
+    user_id: int
+
+class ClassificationsOut(SQLModel):
+    data: list[ClassificationOut]
+    count: int
 
 # Database Model
 class Fauna(FaunaBase, TimestampMixin, table=True):

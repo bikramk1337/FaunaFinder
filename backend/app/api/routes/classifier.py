@@ -1,10 +1,14 @@
+from typing import List, Any
 
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from sqlmodel import func, select
 
 from app.classifier.classifier import ImageClassifier
 from app.api.dependencies import get_current_user, SessionDep, CurrentUser
 from app.api.aws_utils import upload_image_to_s3
-from app.db.fauna import ClassificationHistory
+
+from app.db.models import UserType
+from app.db.fauna import ClassificationHistory, ClassificationOut, ClassificationsOut
 
 
 router = APIRouter()
@@ -97,4 +101,48 @@ async def upload_and_predict(session: SessionDep, current_user: CurrentUser, fil
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-    
+@router.get("/classification-histories", response_model=ClassificationsOut)
+def get_classification_histories(
+    session: SessionDep,
+    current_user: CurrentUser,
+    skip: int = 0,
+    limit: int = 100
+) -> Any:
+    """
+    Get Classification History of Current User.
+    """
+    statement = (
+        select(func.count())
+        .select_from(ClassificationHistory)
+        .where(ClassificationHistory.user_id == current_user.id)
+    )
+    count = session.exec(statement).one()
+
+    statement = (
+        select(ClassificationHistory)
+        .where(ClassificationHistory.user_id == current_user.id)
+        .offset(skip)
+        .limit(limit)
+    )
+    histories = session.exec(statement).all()
+
+    data = [ClassificationOut(
+        id=history.id,
+        user_id=history.user_id,
+        image_url=history.image_url,
+        prediction=history.prediction
+    ) for history in histories]
+
+    return ClassificationsOut(data=data, count=count)
+
+@router.get("/classification-history/{id}", response_model=ClassificationOut)
+def read_item(session: SessionDep, current_user: CurrentUser, id: int) -> Any:
+    """
+    Get classification history ID.
+    """
+    history = session.get(ClassificationHistory, id)
+    if not history:
+        raise HTTPException(status_code=404, detail="Item not found")
+    if not current_user.user_type not in [UserType.SUPERUSER] and (history.user_id != current_user.id):
+        raise HTTPException(status_code=400, detail="Not enough permissions")
+    return history
