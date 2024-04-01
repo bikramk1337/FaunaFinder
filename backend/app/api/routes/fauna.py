@@ -1,6 +1,6 @@
-from typing import Any
+from typing import Any, Optional, List
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import func, select
 from sqlalchemy import or_
 
@@ -31,6 +31,47 @@ def get_faunas(session: SessionDep, current_user: CurrentUser, skip: int = 0, li
     faunas = session.exec(statement).all()
 
     return FaunasOut(data=faunas, count=count)
+
+@router.get("/search", response_model=List[FaunaOut])
+def get_fauna_by_identifier(
+    session: SessionDep,
+    current_user: CurrentUser,
+    label: Optional[int] = Query(None),
+    scientific_name: Optional[str] = Query(None),
+    common_name: Optional[str] = Query(None),
+) -> Any:
+    """
+    Get fauna by label, scientific name, or common name.
+    """
+    if current_user.user_type not in [UserType.SUPERUSER, UserType.DASHBOARD]:
+        raise HTTPException(
+            status_code=403,
+            detail="The user doesn't have enough privileges",
+        )
+
+    if label is None and scientific_name is None and common_name is None:
+        raise HTTPException(
+            status_code=400,
+            detail="At least one of label, scientific_name, or common_name must be provided",
+        )
+
+    search_conditions = []
+    if label is not None:
+        search_conditions.append(Fauna.image_label == label)
+    if scientific_name is not None:
+        search_conditions.append(Fauna.scientific_name.ilike(f"%{scientific_name}%"))
+    if common_name is not None:
+        search_conditions.append(Fauna.common_name.ilike(f"%{common_name}%"))
+
+    fauna_list = session.query(Fauna).filter(or_(*search_conditions)).all()
+
+    if not fauna_list:
+        raise HTTPException(
+            status_code=404,
+            detail="No fauna found",
+        )
+
+    return [FaunaOut(**fauna.dict()) for fauna in fauna_list]
 
 @router.get("/{id}", response_model=FaunaOut)
 def get_fauna_by_id(
@@ -69,48 +110,6 @@ def update_fauna(
     session.add(fauna)
     session.commit()
     session.refresh(fauna)
-    return fauna
-
-
-@router.get("/search", response_model=FaunaOut)
-def get_fauna_by_identifier(
-    session: SessionDep,
-    current_user: CurrentUser,
-    label: int | None = None,
-    scientific_name: str | None = None,
-    common_name: str | None = None,
-) -> Any:
-    """
-    Get a specific fauna by label, scientific name, or common name.
-    """
-    if current_user.user_type not in [UserType.SUPERUSER, UserType.DASHBOARD]:
-        raise HTTPException(
-            status_code=403,
-            detail="The user doesn't have enough privileges",
-        )
-
-    if label is None and scientific_name is None and common_name is None:
-        raise HTTPException(
-            status_code=400,
-            detail="At least one of label, scientific_name, or common_name must be provided",
-        )
-
-    conditions = []
-    if label is not None:
-        conditions.append(Fauna.image_label == label)
-    if scientific_name is not None:
-        conditions.append(Fauna.scientific_name == scientific_name)
-    if common_name is not None:
-        conditions.append(Fauna.common_name == common_name)
-
-    fauna = session.query(Fauna).filter(or_(*conditions)).first()
-
-    if fauna is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Fauna not found",
-        )
-
     return fauna
 
 @router.delete("/{id}")
