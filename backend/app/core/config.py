@@ -1,5 +1,6 @@
 from typing import Annotated, Any
 
+import boto3
 from pydantic import (
     AnyUrl,
     BeforeValidator,
@@ -84,6 +85,20 @@ class Settings(BaseSettings):
             USE_CREDENTIALS=self.USE_CREDENTIALS,
             VALIDATE_CERTS=self.VALIDATE_CERTS,
         )
+    
+    # Boto3 configuration
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    AWS_DEFAULT_REGION: str
+    S3_BUCKET_NAME: str
 
+    @property
+    def s3_client(self):
+        return boto3.client(
+            "s3",
+            aws_access_key_id=self.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=self.AWS_SECRET_ACCESS_KEY,
+            region_name=self.AWS_DEFAULT_REGION
+        )
 
 settings = Settings()
