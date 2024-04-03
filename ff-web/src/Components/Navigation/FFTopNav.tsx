@@ -1,10 +1,10 @@
 import { Box, Card, Tab, Tabs } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IUserRoute } from "../../Types";
+import { IRoute } from "../../Types";
 
 type Props = {
-  navList: IUserRoute[];
+  navList: IRoute[];
 };
 
 function a11yProps(index: number) {

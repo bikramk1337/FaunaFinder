@@ -1,54 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../Redux/store";
-import {
-  selectIsLoggedIn,
-  setIsLoggedIn,
-  setIsLoggedOut,
-} from "../Redux/Slices/authSlice";
+import { selectIsLoggedIn, setIsLoggedIn } from "../Redux/Slices/authSlice";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLogout } from "./useLogout";
 
-const useAuth = () => {
+export const useAuth = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const isLoggedIn = useSelector((state: RootState) => selectIsLoggedIn(state));
+
+  const handleLogout = useLogout();
 
   useEffect(() => {
-    try {
-      const isLoggedInSaved = localStorage.getItem("isLoggedIn");
-      if (isLoggedInSaved === "true") {
-        dispatch(setIsLoggedIn());
-      } else {
-        logOut();
+    (async () => {
+      try {
+        const token = await localStorage.getItem("token");
+        if (token) {
+          dispatch(setIsLoggedIn(token));
+        } else {
+          handleLogout();
+        }
+      } catch (error) {
+        console.log("localstorage could not be accessed");
       }
-    } catch (e) {
-      logOut();
-    }
+    })();
   }, []);
 
-  const logOut = () => {
-    try {
-      localStorage.setItem("isLoggedIn", "false");
-      dispatch(setIsLoggedOut());
-      navigate("/auth");
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const isAuthenticated = useSelector((state: RootState) =>
+    selectIsLoggedIn(state)
+  );
 
-  const login = () => {
-    try {
-      localStorage.setItem("isLoggedIn", "true");
-      dispatch(setIsLoggedIn());
-      navigate("/admin");
-    } catch (e) {
-      console.log(e);
-      logOut();
-    }
-  };
-
-  return { isLoggedIn, login, logOut };
+  return isAuthenticated;
 };
-
-export default useAuth;

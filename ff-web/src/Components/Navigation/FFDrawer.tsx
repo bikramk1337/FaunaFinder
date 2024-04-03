@@ -16,7 +16,6 @@ import {
   SpaceDashboardOutlined,
 } from "@mui/icons-material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../../Hooks/useAuth";
 import { Toolbar } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setIsLoggedOut } from "../../Redux/Slices/authSlice";

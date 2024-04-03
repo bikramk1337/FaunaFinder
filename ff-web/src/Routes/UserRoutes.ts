@@ -1,6 +1,6 @@
-import { IUserRoute } from "../Types";
+import { IRoute } from "../Types";
 
-export const userRoutes: IUserRoute[] = [
+export const userRoutes: IRoute[] = [
   {
     name: "General",
     path: "/admin/users/general-users",

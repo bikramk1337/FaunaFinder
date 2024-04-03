@@ -1,2 +1,2 @@
-export { default as AuthRoute } from "./AuthRoute";
+export { default as AuthRouter } from "./AuthRouter";
 export * from "./UserRoutes";

@@ -2,7 +2,6 @@ import {
   Alert,
   Box,
   Button,
-  Divider,
   FormControl,
   TextField,
   Typography,
@@ -27,19 +26,17 @@ const LoginForm = (props: Props) => {
 
   const navigate = useNavigate();
 
-  const handleLoginClick = () => {
-    // login({ username: email, password })
-    //   .unwrap()
-    //   .then(() => {
-    //     dispatch(setIsLoggedIn());
-    //     navigate("/admin");
-    //   })
-    //   .catch((error) => {
-    //     console.log("login eror", error);
-    //   });
+  const handleLoginClick = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    dispatch(setIsLoggedIn());
-    navigate("/admin");
+    login({ username: email, password: password })
+      .unwrap()
+      .then(() => {
+        navigate("/admin");
+      })
+      .catch((error) => {
+        console.log("login eror", error);
+      });
   };
   return (
     <Box>
@@ -50,58 +47,60 @@ const LoginForm = (props: Props) => {
       )}
 
       <Box>
-        <Box>
-          <FormControl fullWidth sx={{ height: 54, mb: 2 }}>
-            <TextField
-              id="email"
-              variant="outlined"
-              label="Email address"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl fullWidth sx={{ height: 54, mb: 4 }}>
-            <TextField
-              id="password"
-              variant="outlined"
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </FormControl>
-        </Box>
-        <Box>
-          <Button
-            variant="contained"
-            size="large"
-            fullWidth
-            sx={{ height: 54, mb: 2 }}
-            disableElevation
-            onClick={handleLoginClick}
-          >
-            Login
-          </Button>
-        </Box>
-        <Box sx={{ mb: 4, textAlign: "center" }}>
-          <Typography>
-            Don't have an account?{" "}
-            <Link
-              to="#"
-              onClick={(e) => {
-                window.location.href = mailto;
-                e.preventDefault();
-              }}
+        <form id="login-form" onSubmit={handleLoginClick}>
+          <Box>
+            <FormControl fullWidth sx={{ height: 54, mb: 2 }}>
+              <TextField
+                id="email"
+                variant="outlined"
+                label="Email address"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </FormControl>
+          </Box>
+          <Box>
+            <FormControl fullWidth sx={{ height: 54, mb: 4 }}>
+              <TextField
+                id="password"
+                variant="outlined"
+                label="Password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </FormControl>
+          </Box>
+          <Box>
+            <Button
+              variant="contained"
+              size="large"
+              fullWidth
+              sx={{ height: 54, mb: 2 }}
+              disableElevation
+              type="submit"
             >
-              Contact administrator
-            </Link>
-          </Typography>
-        </Box>
+              Login
+            </Button>
+          </Box>
+          <Box sx={{ mb: 4, textAlign: "center" }}>
+            <Typography>
+              Don't have an account?{" "}
+              <Link
+                to="#"
+                onClick={(e) => {
+                  window.location.href = mailto;
+                  e.preventDefault();
+                }}
+              >
+                Contact administrator
+              </Link>
+            </Typography>
+          </Box>
+        </form>
       </Box>
     </Box>
   );
