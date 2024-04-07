@@ -1,6 +1,46 @@
 version: "3.7"
 
 services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.backend.address=:8888"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=your-email@example.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+      - "8888:8888"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "letsencrypt:/letsencrypt"
+    networks:
+      - web
+
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.localhost`)"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.tls.certresolver=myresolver"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "portainer_data:/data"
+    networks:
+      - web
+
   db:
     image: postgres:16
     container_name: db-ff
@@ -11,8 +51,6 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-    ports:
-      - "5000:5432"
     volumes:
       - db-data:/var/lib/postgresql/data:cached
     networks:
@@ -27,12 +65,14 @@ services:
     env_file:
       - .env
     tty: true
-    ports:
-      - "8888:8888"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`localhost`)"
+      - "traefik.http.routers.backend.entrypoints=backend"
+      - "traefik.http.services.backend.loadbalancer.server.port=8888"
     volumes:
       - ./backend:/app/:cached
     environment:
-      - DOMAIN=${DOMAIN}
       - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT}
@@ -44,8 +84,30 @@ services:
     networks:
       - web
 
+  ff-web:
+    build:
+      context: ff-web
+      dockerfile: Dockerfile
+    container_name: frontend
+    stdin_open: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`localhost`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+    volumes:
+      - "./ff-web:/app:cached"
+      - node-modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - web
+
 volumes:
+  letsencrypt:
   db-data:
+  node-modules:
+  portainer_data:
 
 networks:
   web:
