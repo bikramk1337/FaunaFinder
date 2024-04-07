@@ -1,10 +1,12 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import Optional, List, TYPE_CHECKING
 from sqlalchemy import Column, DateTime
 import sqlalchemy as sa
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 
+if TYPE_CHECKING:
+    from app.db.fauna import ClassificationHistory
 
 class TimestampMixin(SQLModel):
     created_at: datetime | None = Field(
@@ -80,6 +82,7 @@ class NewPassword(SQLModel):
 class User(UserBase, TimestampMixin, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     hashed_password: str
+    classification_history: List["ClassificationHistory"] | None = Relationship(back_populates="user")
 
 class EmailVerification(TimestampMixin, table=True):
     id: int = Field(default=None, primary_key=True)
