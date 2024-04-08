@@ -1,27 +1,23 @@
 import React from "react";
 import { FFTopNav } from "../../Components/Navigation";
-import { userRoutes } from "../../Routes";
-import { Box, Button, Typography } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { userTabRoutes } from "../../Routes";
+import { Box } from "@mui/material";
+import { Outlet, useLocation } from "react-router-dom";
+import UserHeader from "./UserHeader";
 
 type Props = {};
 
 const Users = (props: Props) => {
+  const location = useLocation();
+
   return (
     <Box>
-      <Box
-        display={"flex"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        mb={2}
-      >
-        <Typography variant="h5">Users</Typography>
-        <Button variant="contained" color="secondary" size="large">
-          + Add New
-        </Button>
-      </Box>
+      <UserHeader />
 
-      <FFTopNav navList={userRoutes} />
+      {userTabRoutes.find((item) => item.path === location.pathname) && (
+        <FFTopNav navList={userTabRoutes} />
+      )}
+
       <Outlet />
     </Box>
   );

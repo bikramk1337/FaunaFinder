@@ -1,63 +1,54 @@
-import { Box, Typography } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Box, Button, ButtonGroup, Typography } from "@mui/material";
+import { DataGrid, GridColDef, GridRowId } from "@mui/x-data-grid";
 import React from "react";
+import { useGetFaunaQuery } from "../../Redux/Services/speciesService";
+import { FFTable } from "../../Components/FFTable";
+import { SpeciesTableColumns } from "./SpeciesTableColumns";
 
 type Props = {};
 
 const Species = (props: Props) => {
-  const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", flex: 1 },
-    { field: "firstName", headerName: "First name", flex: 1 },
-    { field: "lastName", headerName: "Last name", flex: 1 },
-    {
-      field: "age",
-      headerName: "Age",
-      flex: 1,
-    },
-    {
-      field: "fullName",
-      headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      flex: 1,
-      valueGetter: (value, row) =>
-        `${row.firstName || ""} ${row.lastName || ""}`,
-    },
-  ];
-  const rows = [
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ];
+  const { data, isLoading, isError } = useGetFaunaQuery();
+
+  const handleEditClick = (id: GridRowId) => {};
+
+  const handleDeleteClick = (id: GridRowId) => {};
+
   return (
     <Box>
-      <Typography variant="h5" mb={4}>
-        Species
-      </Typography>
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        mb={2}
+      >
+        <Typography variant="h5" mb={4}>
+          Species
+        </Typography>
+        <ButtonGroup
+          variant="outlined"
+          color="secondary"
+          aria-label="list grid view"
+        >
+          <Button>List view</Button>
+          <Button>Grid view</Button>
+        </ButtonGroup>
+      </Box>
       <Box sx={{ mt: 2 }} style={{ width: "100%" }}>
-        <DataGrid
-          autoHeight
-          rows={rows}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
-            },
-          }}
-          pageSizeOptions={[10, 50, 100, { value: -1, label: "All" }]}
-          rowSelection={false}
-          sx={{
-            "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
-              outline: "none !important",
-            },
-          }}
-        />
+        {isError ? (
+          <Box>Error</Box>
+        ) : (
+          <FFTable
+            data={data?.data || []}
+            columns={SpeciesTableColumns({
+              handleEditClick,
+              handleDeleteClick,
+            })}
+            page={1}
+            pageSize={10}
+            isLoading={isLoading}
+          />
+        )}
       </Box>
     </Box>
   );

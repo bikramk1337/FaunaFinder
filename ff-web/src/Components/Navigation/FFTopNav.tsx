@@ -25,7 +25,7 @@ const FFTopNav = (props: Props) => {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Card variant="outlined" elevation={2}>
+      <Card variant="outlined">
         <Tabs
           value={
             navList.findIndex((item) => item.path === location.pathname) === -1

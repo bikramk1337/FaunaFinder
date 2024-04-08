@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IUser } from "../../Types";
+import { IUserResponse } from "../../Types";
 import { RootState } from "../store";
 
 export const userApi = createApi({
@@ -16,10 +16,13 @@ export const userApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getUsers: builder.query<IUser, void>({
+    getGeneralUsers: builder.query<IUserResponse, void>({
+      query: () => `users`,
+    }),
+    getAdminUsers: builder.query<IUserResponse, void>({
       query: () => `users`,
     }),
   }),
 });
 
-export const { useGetUsersQuery } = userApi;
+export const { useGetGeneralUsersQuery, useGetAdminUsersQuery } = userApi;
