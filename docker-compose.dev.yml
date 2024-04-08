@@ -54,6 +54,7 @@ services:
       - node-modules:/app/node_modules
     environment:
       - NODE_ENV=development
+      - REACT_APP_BASE_URL=http://localhost:8888/api/v1
     networks:
       - web
 
