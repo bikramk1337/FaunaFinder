@@ -25,17 +25,32 @@ git clone --recursive https://github.com/bikramk1337/faunafinder.git
 - Docker
 
 ## Installation
-### Backend
 Just run the build script
+### For Dev Environment
+
 ```sh
-sh build.sh
+sh build.sh dev
+```
+
+### For Prod Environment
+
+```sh
+sh build.sh prod
 ```
    
 
 ## Usage
+### Dev
+Api Swagger Doc URL: http://0.0.0.0:8888/docs/
 
+Api Redoc URL: http://0.0.0.0:8888/redoc/
 
+Frontend: http://localhost:3000/
 
+### Prod
+Api Swagger Doc URL: https://ff.odinsvault.xyz:8888/docs/
+
+Frontend: https://ff.odinsvault.xyz/
 
 ### Branching Strategy
 - **Main**: Stable and deployable versions of the application.

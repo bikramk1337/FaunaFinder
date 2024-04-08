@@ -29,7 +29,6 @@ class Settings(BaseSettings):
     ] = []
 
     API_V1_STR: str = "/api/v1"
-    DOMAIN: str
     SECRET_KEY: str
     # Access Token expires in 7 days
     ACCESS_TOKEN_EXPIRE: int = 7
