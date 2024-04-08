@@ -107,7 +107,7 @@ services:
       - node-modules:/app/node_modules
     environment:
       - NODE_ENV=production
-      - REACT_APP_BASE_URL=http://ff.odinsvault.xyz:8888/api/v1
+      - REACT_APP_BASE_URL=https://ff.odinsvault.xyz:8888/api/v1
     networks:
       - web
 
