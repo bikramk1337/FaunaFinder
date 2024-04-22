@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import { generateAvatar } from "../../Helpers";
 import { MoreVert } from "@mui/icons-material";
+import { IUser } from "../../Types";
 
 function DeleteUserActionItem({
   deleteUser,
@@ -65,15 +66,15 @@ export const UserTableColumns = ({
   handleEditClick,
   handleDeleteClick,
 }: {
-  handleEditClick: (id: GridRowId) => void;
-  handleDeleteClick: (id: GridRowId) => void;
+  handleEditClick: (row: IUser) => void;
+  handleDeleteClick: (row: IUser) => void;
 }) => {
   const columns: GridColDef[] = [
     {
       field: "id",
       headerName: "ID",
-      flex: 1,
       sortable: true,
+      width: 80,
     },
     {
       field: "full_name",
@@ -137,23 +138,6 @@ export const UserTableColumns = ({
       },
       align: "center",
     },
-    // {
-    //   field: "Action",
-    //   headerName: "",
-    //   description: "Action menu",
-    //   sortable: false,
-    //   width: 20,
-    //   type: "number",
-    //   renderCell: () => (
-    //     <IconButton
-    //       sx={{ alignItems: "flex-end" }}
-    //       ref={anchorRef}
-    //       onClick={handleClick}
-    //     >
-    //       <MoreVert />
-    //     </IconButton>
-    //   ),
-    // },
     {
       field: "actions",
       type: "actions",
@@ -161,12 +145,14 @@ export const UserTableColumns = ({
       getActions: (params) => [
         <GridActionsCellItem
           label="Edit"
-          onClick={() => handleEditClick(params.id)}
+          onClick={() => {
+            handleEditClick(params.row);
+          }}
           showInMenu
         />,
         <GridActionsCellItem
           label="Delete"
-          onClick={() => handleDeleteClick(params.id)}
+          onClick={() => handleDeleteClick(params.row)}
           showInMenu
         />,
       ],

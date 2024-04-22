@@ -5,18 +5,28 @@ import { UserTableColumns } from "./UserTableColumns";
 import { useGetAdminUsersQuery } from "../../Redux/Services/userService";
 import { useNavigate } from "react-router-dom";
 import { FFTable } from "../../Components/FFTable";
+import { useDispatch } from "react-redux";
+import { setEditData } from "../../Redux/Slices/userSlice";
+import { IUser } from "../../Types";
 
 type Props = {};
 
 const UsersAdmin = (props: Props) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { data, isLoading, isError } = useGetAdminUsersQuery();
 
-  const handleEditClick = (id: GridRowId) => {
-    navigate(`/admin/users/edit-user/${id}`);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleEditClick = (row: IUser) => {
+    dispatch(setEditData(row));
+    navigate(`/admin/users/edit-user/${row.id}`);
   };
 
-  const handleDeleteClick = (id: GridRowId) => {};
+  const handleDeleteClick = (row: IUser) => {
+    dispatch(setEditData(row));
+    setShowDeleteModal(true);
+  };
 
   if (isError) {
     return <Box>Error</Box>;

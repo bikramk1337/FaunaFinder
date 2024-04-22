@@ -19,3 +19,9 @@ export interface ISpeciesResponse {
   data: ISpecies[];
   count: string;
 }
+
+export interface ISpeciesQueryParams {
+  label?: string;
+  scientific_name?: string;
+  common_name?: string;
+}

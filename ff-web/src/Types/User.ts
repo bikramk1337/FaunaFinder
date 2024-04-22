@@ -11,3 +11,7 @@ export interface IUserResponse {
   data: IUser[];
   count: string;
 }
+
+export interface IUserCreate extends IUser {
+  password: string;
+}
