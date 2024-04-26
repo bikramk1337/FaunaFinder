@@ -1,76 +1,62 @@
-import { MoreVert } from "@mui/icons-material";
-import { Box, IconButton } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React from "react";
-import { useGetUsersQuery } from "../../Redux/Services/userService";
+import { Box } from "@mui/material";
+import { GridRowId } from "@mui/x-data-grid";
+import React, { useRef, useState } from "react";
+import { useGetGeneralUsersQuery } from "../../Redux/Services/userService";
+import { UserTableColumns } from "./UserTableColumns";
+import { FFTable } from "../../Components/FFTable";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { resetEditData, setEditData } from "../../Redux/Slices/userSlice";
+import { IUser } from "../../Types";
+import DeleteUserDialog from "./DeleteUserDialog";
 
 type Props = {};
 
 const UsersGeneral = (props: Props) => {
-  const { data, isLoading, isError } = useGetUsersQuery();
-  const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", flex: 1 },
-    { field: "firstName", headerName: "First name", flex: 1 },
-    { field: "lastName", headerName: "Last name", flex: 1 },
-    {
-      field: "age",
-      headerName: "Age",
-      flex: 1,
-    },
-    {
-      field: "fullName",
-      headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      flex: 1,
-      valueGetter: (value, row) =>
-        `${row.firstName || ""} ${row.lastName || ""}`,
-    },
-    {
-      field: "Action",
-      headerName: "",
-      description: "Action menu",
-      sortable: false,
-      width: 20,
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { data, isLoading, isError } = useGetGeneralUsersQuery();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-      type: "number",
-      renderCell: () => (
-        <IconButton sx={{ alignItems: "flex-end" }}>
-          <MoreVert />
-        </IconButton>
-      ),
-    },
-  ];
-  const rows = [
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ];
+  const handleEditClick = (row: IUser) => {
+    dispatch(setEditData(row));
+    navigate(`/admin/users/edit-user/${row.id}`);
+  };
+
+  const handleDeleteClick = (row: IUser) => {
+    dispatch(setEditData(row));
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteModalClose = () => {
+    dispatch(resetEditData());
+    setShowDeleteModal(false);
+  };
+
+  const handleDeleteUser = () => {};
+
+  if (isError) {
+    return <Box>Error</Box>;
+  }
   return (
     <Box sx={{ mt: 2 }} style={{ width: "100%" }}>
-      <DataGrid
-        autoHeight
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 10 },
-          },
-        }}
-        pageSizeOptions={[10, 50, 100, { value: -1, label: "All" }]}
-        rowSelection={false}
-        sx={{
-          "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
-            outline: "none !important",
-          },
-        }}
+      <FFTable
+        data={data?.data || []}
+        columns={UserTableColumns({
+          handleEditClick,
+          handleDeleteClick,
+        })}
+        page={1}
+        pageSize={10}
+        isLoading={isLoading}
       />
+      {showDeleteModal && (
+        <DeleteUserDialog
+          open={showDeleteModal}
+          handleClose={handleDeleteModalClose}
+          handleDelete={handleDeleteUser}
+        />
+      )}
     </Box>
   );
 };

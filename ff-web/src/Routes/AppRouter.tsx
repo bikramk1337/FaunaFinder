@@ -9,10 +9,13 @@ import Species from "../Pages/Species/Species";
 import NoRouteMatch from "../Components/NoRouteMatch/NoRouteMatch";
 import Dashboard from "../Pages/Dashboard/Dashboard";
 import Settings from "../Pages/Settings/Settings";
+import AddUser from "../Pages/Users/AddUser";
+import EditUser from "../Pages/Users/EditUser";
 
 const AppRouter = () => {
   return (
     <Routes>
+      <Route index element={<Navigate to="/admin" />} />
       <Route path="/auth/*">
         <Route index element={<Navigate to="login" />} />
         <Route path="login" element={<LogoutConfirmation />} />
@@ -25,6 +28,8 @@ const AppRouter = () => {
           <Route index element={<Navigate to="general" />} />
           <Route path="general-users" element={<UsersGeneral />} />
           <Route path="admin-users" element={<UsersAdmin />} />
+          <Route path="add-user" element={<AddUser />} />
+          <Route path="edit-user/:id" element={<EditUser />} />
           <Route path="*" element={<Navigate to="general-users" />} />
         </Route>
         <Route path="species" element={<Species />} />

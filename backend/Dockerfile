@@ -3,6 +3,7 @@ FROM python:3.11
 RUN mkdir /app
 WORKDIR /app
 
+RUN pip install --upgrade pip
 # Install Poetry
 RUN pip install --no-cache-dir poetry
 
