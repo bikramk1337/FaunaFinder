@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IUser, IUserCreate, IUserResponse } from "../../Types";
+import {
+  IPaginationRequest,
+  IUser,
+  IUserCreate,
+  IUsersResponse,
+} from "../../Types";
 import { RootState } from "../store";
 
 export const userApi = createApi({
@@ -17,15 +22,15 @@ export const userApi = createApi({
   }),
   tagTypes: ["User"],
   endpoints: (builder) => ({
-    getGeneralUsers: builder.query<IUserResponse, void>({
-      query: () => `users`,
+    getUsers: builder.query<IUsersResponse, IPaginationRequest>({
+      query: ({ skip, limit }) => `users?skip=${skip}&limit=${limit}`,
       providesTags: ["User"],
     }),
-    getAdminUsers: builder.query<IUserResponse, void>({
-      query: () => `users`,
+    getUserById: builder.query<IUser, string>({
+      query: (id) => `users/${id}`,
       providesTags: ["User"],
     }),
-    addUser: builder.mutation<IUserResponse, IUserCreate>({
+    addUser: builder.mutation<IUser, IUserCreate>({
       query: (user) => ({
         url: `users`,
         method: "POST",
@@ -37,7 +42,7 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-    updateUser: builder.mutation<IUserResponse, IUser>({
+    updateUser: builder.mutation<IUser, IUser>({
       query: (user) => ({
         url: `users/${user.id}`,
         method: "PATCH",
@@ -49,19 +54,12 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-    deleteUser: builder.mutation<IUserResponse, IUser>({
-      query: (user) => ({
-        url: `users/${user.id}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["User"],
-    }),
   }),
 });
 
 export const {
-  useGetGeneralUsersQuery,
-  useGetAdminUsersQuery,
+  useGetUsersQuery,
+  useGetUserByIdQuery,
   useAddUserMutation,
   useUpdateUserMutation,
 } = userApi;

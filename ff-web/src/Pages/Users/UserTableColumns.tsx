@@ -1,73 +1,17 @@
-import React, { RefObject } from "react";
+import React from "react";
 import {
   GridActionsCellItem,
-  GridActionsCellItemProps,
   GridCellParams,
   GridColDef,
-  GridRowId,
 } from "@mui/x-data-grid";
-import {
-  Avatar,
-  Button,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Chip, Stack, Typography } from "@mui/material";
 import { generateAvatar } from "../../Helpers";
-import { MoreVert } from "@mui/icons-material";
 import { IUser } from "../../Types";
-
-function DeleteUserActionItem({
-  deleteUser,
-  ...props
-}: GridActionsCellItemProps & { deleteUser: () => void }) {
-  const [open, setOpen] = React.useState(false);
-
-  return (
-    <React.Fragment>
-      <GridActionsCellItem {...props} onClick={() => setOpen(true)} />
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Delete this user?</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button
-            onClick={() => {
-              setOpen(false);
-              deleteUser();
-            }}
-            color="warning"
-            autoFocus
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
-  );
-}
 
 export const UserTableColumns = ({
   handleEditClick,
-  handleDeleteClick,
 }: {
   handleEditClick: (row: IUser) => void;
-  handleDeleteClick: (row: IUser) => void;
 }) => {
   const columns: GridColDef[] = [
     {
@@ -75,12 +19,14 @@ export const UserTableColumns = ({
       headerName: "ID",
       sortable: true,
       width: 80,
+      sortingOrder: ["asc", "desc"],
     },
     {
       field: "full_name",
       headerName: "Full name",
       flex: 1,
       sortable: true,
+      sortingOrder: ["asc", "desc"],
       renderCell: (params) => {
         return (
           <Stack
@@ -106,6 +52,7 @@ export const UserTableColumns = ({
       headerName: "Email address",
       flex: 1,
       sortable: true,
+      sortingOrder: ["asc", "desc"],
     },
     {
       field: "Status",
@@ -148,11 +95,6 @@ export const UserTableColumns = ({
           onClick={() => {
             handleEditClick(params.row);
           }}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          label="Delete"
-          onClick={() => handleDeleteClick(params.row)}
           showInMenu
         />,
       ],

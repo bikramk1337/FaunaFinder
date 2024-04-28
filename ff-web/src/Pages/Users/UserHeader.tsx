@@ -22,7 +22,6 @@ const UserHeader = (props: Props) => {
       variant="contained"
       disableElevation
       color="secondary"
-      size="large"
       onClick={handleCancelClick}
     >
       Cancel
@@ -33,8 +32,7 @@ const UserHeader = (props: Props) => {
     <Button
       variant="contained"
       disableElevation
-      color="secondary"
-      size="large"
+      color="primary"
       onClick={handleAddUserClick}
     >
       + Add User
@@ -52,23 +50,20 @@ const UserHeader = (props: Props) => {
       alignItems={"center"}
       mb={2}
     >
-      {userTabRoutes.find((item) => item.path === location.pathname) && (
-        <>
-          <Title name={"Users"} />
-          {AddButton}
-        </>
-      )}
-
-      {location.pathname.includes("add-user") && (
+      {location.pathname.includes("add-user") ? (
         <>
           <Title name={"Add user"} />
           {CancelButton}
         </>
-      )}
-      {location.pathname.includes("edit-user") && (
+      ) : location.pathname.includes("edit-user") ? (
         <>
           <Title name={"Edit user"} />
           {CancelButton}
+        </>
+      ) : (
+        <>
+          <Title name={"Users"} />
+          {AddButton}
         </>
       )}
     </Box>
