@@ -32,15 +32,15 @@ const FaunaListItem = (props: Props) => {
   const location = useLocation();
 
   return (
-    <Grid item sm={12} lg={6}>
+    <Grid item sm={12} lg={12}>
       <Card sx={{ display: "flex" }} variant="outlined">
         <CardMedia
           component="img"
-          sx={{ width: 250 }}
+          sx={{ width: 200 }}
           image="https://www.aces.edu/wp-content/uploads/2023/04/iStock-1232014586.jpg"
           alt={fauna.common_name}
         />
-        <Box>
+        <Box width={"100%"}>
           <CardContent>
             <Link
               key={fauna.id}

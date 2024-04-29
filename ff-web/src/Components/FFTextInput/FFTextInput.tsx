@@ -13,7 +13,7 @@ interface Props extends StandardTextFieldProps {
 
 const FFTextInput = (props: Props) => {
   return (
-    <FormControl fullWidth={props.fullWidth}>
+    <FormControl fullWidth={props.fullWidth === false ? false : true}>
       {props.formLabel && <FormLabel>{props.formLabel}</FormLabel>}
       <TextField variant="outlined" {...props} />
     </FormControl>

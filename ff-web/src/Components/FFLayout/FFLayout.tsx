@@ -4,8 +4,7 @@ import { FFDrawer } from "../Navigation";
 import { Outlet } from "react-router-dom";
 import { Menu } from "@mui/icons-material";
 import { Logo, LogoText } from "../Logo";
-
-const drawerWidth = 240;
+import { drawerWidth } from "../../Constants";
 
 type Props = {};
 
@@ -36,13 +35,10 @@ const FFLayout = (props: Props) => {
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
           bgcolor: "white",
-          // borderBottom: 1,
-          // borderBottomColor: "grey.500",
         }}
       >
         <Toolbar>
           <IconButton
-            color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
