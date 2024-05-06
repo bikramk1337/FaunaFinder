@@ -17,7 +17,7 @@ export interface ISpecies {
 
 export interface ISpeciesResponse {
   data: ISpecies[];
-  count: string;
+  count: number;
 }
 
 export interface ISpeciesQueryParams {

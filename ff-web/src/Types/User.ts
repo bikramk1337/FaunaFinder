@@ -7,7 +7,7 @@ export interface IUser {
   id: number;
 }
 
-export interface IUserResponse {
+export interface IUsersResponse {
   data: IUser[];
   count: string;
 }

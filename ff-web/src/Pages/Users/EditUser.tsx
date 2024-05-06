@@ -1,6 +1,9 @@
-import React, { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import { useUpdateUserMutation } from "../../Redux/Services/userService";
+import React, { FormEvent, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  useGetUserByIdQuery,
+  useUpdateUserMutation,
+} from "../../Redux/Services/userService";
 import { useSelector } from "react-redux";
 
 import {
@@ -22,16 +25,26 @@ import {
   TextField,
 } from "@mui/material";
 import { RootState } from "../../Redux/store";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 type Props = {};
 
 const EditUser = (props: Props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { id } = useParams();
+
+  const { data, isLoading, isError } = useGetUserByIdQuery(id ?? skipToken);
 
   const editData = useSelector((state: RootState) => selectEditData(state));
 
-  const [updateUser, { isLoading }] = useUpdateUserMutation();
+  const [updateUser, { isLoading: isSubmitting }] = useUpdateUserMutation();
+
+  useEffect(() => {
+    if (id && data && data.hasOwnProperty("id") && data.id === parseInt(id)) {
+      dispatch(setEditData(data));
+    }
+  }, [id, data, dispatch]);
 
   const handleFieldChange = (key: any, value: any) => {
     dispatch(setEditData({ [key]: value }));
@@ -49,6 +62,14 @@ const EditUser = (props: Props) => {
         console.log("add user eror", error);
       });
   };
+
+  if (isError) {
+    return <Box>Error</Box>;
+  }
+
+  if (isLoading) {
+    return <Box>Loading...</Box>;
+  }
 
   return (
     <Box>
@@ -116,13 +137,12 @@ const EditUser = (props: Props) => {
               </Box>
               <Box mb={2}>
                 <FormControlLabel
-                  control={<Checkbox color="secondary" />}
+                  control={<Checkbox />}
                   label="Activate user"
                   checked={editData.is_active}
                   onChange={(e) => {
                     handleFieldChange("is_active", !editData.is_active);
                   }}
-                  color="secondary"
                 />
               </Box>
             </Grid>
@@ -138,6 +158,7 @@ const EditUser = (props: Props) => {
               navigate(-1);
             }}
             sx={{ mr: 1 }}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
@@ -146,9 +167,9 @@ const EditUser = (props: Props) => {
             variant="contained"
             disableElevation
             type="submit"
-            disabled={isLoading}
+            disabled={isSubmitting}
           >
-            {isLoading && (
+            {isSubmitting && (
               <CircularProgress size={18} sx={{ mr: 1 }} color="secondary" />
             )}
             Save

@@ -17,6 +17,8 @@ import React, { FormEvent, FormEventHandler, useState } from "react";
 import { IUser, IUserCreate } from "../../Types";
 import { useNavigate } from "react-router-dom";
 import { useAddUserMutation } from "../../Redux/Services/userService";
+import FFButton from "../../Components/FFButton/FFButton";
+import FFTextInput from "../../Components/FFTextInput/FFTextInput";
 
 type Props = {};
 
@@ -43,7 +45,7 @@ const AddUser = (props: Props) => {
       .unwrap()
       .then(() => {
         setEditData(initialEditData);
-        navigate("-1");
+        navigate("/admin/users");
       })
       .catch((error) => {
         console.log("add user eror", error);
@@ -56,47 +58,43 @@ const AddUser = (props: Props) => {
         <Grid container>
           <Grid item xs={12} lg={6}>
             <Box mt={4} mb={2}>
-              <FormControl fullWidth required>
+              <FormControl fullWidth>
                 <FormLabel>Full name</FormLabel>
                 <TextField
                   id="fullName"
                   variant="outlined"
                   placeholder="Enter full name"
-                  color="secondary"
                   type="text"
                   value={editData.full_name}
                   onChange={(e) =>
                     setEditData({ ...editData, full_name: e.target.value })
                   }
                   required
+                  autoFocus
                 />
               </FormControl>
             </Box>
             <Box mb={2}>
-              <FormControl required fullWidth>
-                <FormLabel>Email address</FormLabel>
-                <TextField
-                  id="email"
-                  variant="outlined"
-                  placeholder="Enter email address"
-                  color="secondary"
-                  type="email"
-                  value={editData.email}
-                  onChange={(e) =>
-                    setEditData({ ...editData, email: e.target.value })
-                  }
-                  required
-                />
-              </FormControl>
+              <FFTextInput
+                fullWidth
+                formLabel="Email address"
+                id="email"
+                placeholder="Enter email address"
+                type="email"
+                value={editData.email}
+                onChange={(e) =>
+                  setEditData({ ...editData, email: e.target.value })
+                }
+                required
+              />
             </Box>
             <Box mb={2}>
-              <FormControl required fullWidth>
+              <FormControl fullWidth>
                 <FormLabel>Password</FormLabel>
                 <TextField
                   id="password"
                   variant="outlined"
                   placeholder="Enter password"
-                  color="secondary"
                   type="password"
                   value={editData.password}
                   onChange={(e) =>
@@ -108,7 +106,7 @@ const AddUser = (props: Props) => {
             </Box>
             <Grid sm={12} lg={6}>
               <Box mb={2}>
-                <FormControl required fullWidth>
+                <FormControl fullWidth>
                   <FormLabel>User type</FormLabel>
                   <TextField
                     id="user_type"
@@ -118,23 +116,16 @@ const AddUser = (props: Props) => {
                     onChange={(e) =>
                       setEditData({ ...editData, user_type: e.target.value })
                     }
-                    color="secondary"
                   >
-                    <MenuItem color="secondary" value={"regular"}>
-                      Regular
-                    </MenuItem>
-                    <MenuItem color="secondary" value={"dashboard"}>
-                      Dashboard
-                    </MenuItem>
-                    <MenuItem color="secondary" value={"superuser"}>
-                      Superuser
-                    </MenuItem>
+                    <MenuItem value={"regular"}>Regular</MenuItem>
+                    <MenuItem value={"dashboard"}>Dashboard</MenuItem>
+                    <MenuItem value={"superuser"}>Superuser</MenuItem>
                   </TextField>
                 </FormControl>
               </Box>
               <Box mb={2}>
                 <FormControlLabel
-                  control={<Checkbox color="secondary" />}
+                  control={<Checkbox />}
                   label="Activate user"
                   checked={editData.is_active}
                   onChange={(e) => {
@@ -143,37 +134,23 @@ const AddUser = (props: Props) => {
                       is_active: !editData.is_active,
                     });
                   }}
-                  color="secondary"
                 />
               </Box>
             </Grid>
           </Grid>
         </Grid>
         <Box display={"flex"} justifyContent={"end"} mt={4}>
-          <Button
-            variant="contained"
-            disableElevation
+          <FFButton
             type="button"
             color="secondary"
             onClick={() => {
               navigate(-1);
             }}
             sx={{ mr: 1 }}
-          >
-            Cancel
-          </Button>
+            name="Cancel"
+          />
 
-          <Button
-            variant="contained"
-            disableElevation
-            type="submit"
-            disabled={isLoading}
-          >
-            {isLoading && (
-              <CircularProgress size={18} sx={{ mr: 1 }} color="secondary" />
-            )}
-            Save
-          </Button>
+          <FFButton type="submit" isLoading={isLoading} name="Save" />
         </Box>
       </form>
     </Box>

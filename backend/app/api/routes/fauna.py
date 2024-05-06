@@ -49,11 +49,11 @@ def get_fauna_by_identifier(
             detail="The user doesn't have enough privileges",
         )
 
-    if label is None and scientific_name is None and common_name is None:
-        raise HTTPException(
-            status_code=400,
-            detail="At least one of label, scientific_name, or common_name must be provided",
-        )
+    # if label is None and scientific_name is None and common_name is None:
+    #     raise HTTPException(
+    #         status_code=400,
+    #         detail="At least one of label, scientific_name, or common_name must be provided",
+    #     )
 
     search_conditions = []
     if label is not None:
@@ -65,11 +65,11 @@ def get_fauna_by_identifier(
 
     fauna_list = session.query(Fauna).filter(or_(*search_conditions)).all()
 
-    if not fauna_list:
-        raise HTTPException(
-            status_code=404,
-            detail="No fauna found",
-        )
+    # if not fauna_list:
+    #     raise HTTPException(
+    #         status_code=404,
+    #         detail="No fauna found",
+    #     )
 
     return [FaunaOut(**fauna.dict()) for fauna in fauna_list]
 
