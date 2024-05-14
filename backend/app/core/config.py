@@ -1,5 +1,5 @@
 from typing import Annotated, Any
-
+import hvac
 import boto3
 from pydantic import (
     AnyUrl,
@@ -53,18 +53,19 @@ class Settings(BaseSettings):
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB,
         )
-    
+
     SUPERUSER_EMAIL: str
     SUPERUSER_PASSWORD: str
     USER_SIGNUP: bool = True
 
+    # Vault Config
+    VAULT_TOKEN: str
+
     # Email configuration
-    MAIL_USERNAME: str
-    MAIL_PASSWORD: str
-    MAIL_FROM: str
-    MAIL_PORT: int
-    MAIL_SERVER: str
-    MAIL_FROM_NAME: str
+    MAIL_USERNAME: str = ""
+    MAIL_PASSWORD: str = ""
+    MAIL_PORT: int = 0
+    MAIL_SERVER: str = ""
     MAIL_STARTTLS: bool = True
     MAIL_SSL_TLS: bool = False
     USE_CREDENTIALS: bool = True
@@ -75,21 +76,21 @@ class Settings(BaseSettings):
         return ConnectionConfig(
             MAIL_USERNAME=self.MAIL_USERNAME,
             MAIL_PASSWORD=self.MAIL_PASSWORD,
-            MAIL_FROM=self.MAIL_FROM,
+            MAIL_FROM=self.MAIL_USERNAME,
             MAIL_PORT=self.MAIL_PORT,
             MAIL_SERVER=self.MAIL_SERVER,
-            MAIL_FROM_NAME=self.MAIL_FROM_NAME,
+            MAIL_FROM_NAME=self.PROJECT_NAME,
             MAIL_STARTTLS=self.MAIL_STARTTLS,
             MAIL_SSL_TLS=self.MAIL_SSL_TLS,
             USE_CREDENTIALS=self.USE_CREDENTIALS,
             VALIDATE_CERTS=self.VALIDATE_CERTS,
         )
-    
+
     # Boto3 configuration
-    AWS_ACCESS_KEY_ID: str
-    AWS_SECRET_ACCESS_KEY: str
-    AWS_DEFAULT_REGION: str
-    S3_BUCKET_NAME: str
+    AWS_ACCESS_KEY_ID: str = ""
+    AWS_SECRET_ACCESS_KEY: str = ""
+    AWS_DEFAULT_REGION: str = ""
+    S3_BUCKET_NAME: str = ""
 
     @property
     def s3_client(self):
@@ -99,5 +100,27 @@ class Settings(BaseSettings):
             aws_secret_access_key=self.AWS_SECRET_ACCESS_KEY,
             region_name=self.AWS_DEFAULT_REGION
         )
+
+    def __init__(self):
+        super().__init__()
+
+        # Initialize Vault client
+        self.vault_client = hvac.Client(url="http://vault:8200")
+        self.vault_client.token = self.VAULT_TOKEN
+
+        # Retrieve secrets from Vault
+        secrets = self.vault_client.secrets.kv.v2.read_secret_version(path="ff-secrets")["data"]["data"]
+
+        # Set email configuration from Vault secrets
+        self.MAIL_USERNAME = secrets.get("MAIL_USERNAME", "")
+        self.MAIL_PASSWORD = secrets.get("MAIL_PASSWORD", "")
+        self.MAIL_PORT = secrets.get("MAIL_PORT", 0)
+        self.MAIL_SERVER = secrets.get("MAIL_SERVER", "")
+
+        # Set AWS configuration from Vault secrets
+        self.AWS_ACCESS_KEY_ID = secrets.get("AWS_ACCESS_KEY_ID", "")
+        self.AWS_SECRET_ACCESS_KEY = secrets.get("AWS_SECRET_ACCESS_KEY", "")
+        self.AWS_DEFAULT_REGION = secrets.get("AWS_DEFAULT_REGION", "")
+        self.S3_BUCKET_NAME = secrets.get("S3_BUCKET_NAME", "")
 
 settings = Settings()

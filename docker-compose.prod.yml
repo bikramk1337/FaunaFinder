@@ -10,16 +10,18 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.backend.address=:8888"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.myresolver.acme.email=faunafinder.ff@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - '--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
-      - "8888:8888"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "letsencrypt:/letsencrypt"
@@ -32,18 +34,39 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`${DOMAIN}`) && PathPrefix(`/portainer`)"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)"
       - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.tls.certresolver=myresolver"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
-      - "traefik.http.routers.portainer.middlewares=portainer-stripprefix"
-      - "traefik.http.middlewares.portainer-stripprefix.stripprefix.prefixes=/portainer"
-
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "portainer_data:/data"
     networks:
       - web
+
+  vault:
+    image: hashicorp/vault
+    container_name: vault
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vault.rule=Host(`hsv.${DOMAIN}`)"
+      - "traefik.http.routers.vault.entrypoints=websecure"
+      - "traefik.http.routers.vault.tls.certresolver=myresolver"
+      - "traefik.http.services.vault.loadbalancer.server.port=8200"
+    environment:
+      - VAULT_ADDR=http://0.0.0.0:8200
+      - VAULT_API_ADDR=http://0.0.0.0:8200
+      - VAULT_DEV_ROOT_TOKEN_ID=${VAULT_TOKEN}
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - vault-data:/vault/data
+      - vault-logs:/vault/logs
+    command: server -dev
+    networks:
+      - web
+
 
   db:
     image: postgres:16
@@ -51,6 +74,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    ports:
+      - 5432
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -71,8 +96,8 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.backend.entrypoints=backend"
+      - "traefik.http.routers.backend.rule=Host(`api.${DOMAIN}`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
       - "traefik.http.routers.backend.tls.certresolver=myresolver"
       - "traefik.http.services.backend.loadbalancer.server.port=8888"
     volumes:
@@ -86,6 +111,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     depends_on:
       - "db"
+      - "vault"
     networks:
       - web
 
@@ -98,7 +124,7 @@ services:
     stdin_open: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.frontend.rule=Host(`ff.${DOMAIN}`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
       - "traefik.http.services.frontend.loadbalancer.server.port=3000"
@@ -107,12 +133,14 @@ services:
       - node-modules:/app/node_modules
     environment:
       - NODE_ENV=production
-      - REACT_APP_BASE_URL=https://ff.odinsvault.xyz:8888/api/v1
+      - REACT_APP_BASE_URL=https://api.odinsvault.xyz/api/v1
     networks:
       - web
 
 volumes:
   letsencrypt:
+  vault-data:
+  vault-logs:
   db-data:
   node-modules:
   portainer_data:
