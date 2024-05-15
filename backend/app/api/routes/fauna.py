@@ -88,6 +88,26 @@ def get_fauna_by_id(
     fauna = session.get(Fauna, id)
     return fauna
 
+@router.get("/{image_label}", response_model=FaunaOut)
+def get_fauna_by_label(
+    image_label: int, session: SessionDep, current_user: CurrentUser
+) -> Any:
+    """
+    Get a specific Fauna by id.
+    """
+    if current_user.user_type not in [UserType.SUPERUSER, UserType.DASHBOARD, UserType.REGULAR]:
+        raise HTTPException(
+            status_code=403,
+            detail="The user doesn't have enough privileges",
+        )
+    fauna = session.get(Fauna, image_label)
+    if not fauna:
+        raise HTTPException(
+            status_code=404,
+            detail="There is no Fauna of this label.",
+        )
+    return fauna
+
 @router.put("/{id}", response_model=FaunaOut)
 def update_fauna(
     *, session: SessionDep, current_user: CurrentUser, id: int, fauna_in: FaunaUpdate
