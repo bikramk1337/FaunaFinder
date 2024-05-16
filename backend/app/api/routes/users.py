@@ -140,7 +140,7 @@ def update_current_user_password(
 @router.get(
     "/", dependencies=[Depends(get_current_active_superuser)], response_model=UsersOut
 )
-def get_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
+def get_users(session: SessionDep) -> Any:
     """
     Get users.
     """
@@ -148,7 +148,7 @@ def get_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     statment = select(func.count()).select_from(User)
     count = session.exec(statment).one()
 
-    statement = select(User).offset(skip).limit(limit)
+    statement = select(User)
     users = session.exec(statement).all()
 
     return UsersOut(data=users, count=count)

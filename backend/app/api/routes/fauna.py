@@ -36,7 +36,7 @@ def get_faunas(session: SessionDep, current_user: CurrentUser, skip: int = 0, li
 def get_fauna_by_identifier(
     session: SessionDep,
     current_user: CurrentUser,
-    label: Optional[int] = Query(None),
+    label: Optional[str] = Query(None),
     scientific_name: Optional[str] = Query(None),
     common_name: Optional[str] = Query(None),
 ) -> Any:
@@ -48,16 +48,10 @@ def get_fauna_by_identifier(
             status_code=403,
             detail="The user doesn't have enough privileges",
         )
-
-    # if label is None and scientific_name is None and common_name is None:
-    #     raise HTTPException(
-    #         status_code=400,
-    #         detail="At least one of label, scientific_name, or common_name must be provided",
-    #     )
-
+    
     search_conditions = []
     if label is not None:
-        search_conditions.append(Fauna.image_label == label)
+        search_conditions.append(Fauna.label.ilike(f"%{label}%"))
     if scientific_name is not None:
         search_conditions.append(Fauna.scientific_name.ilike(f"%{scientific_name}%"))
     if common_name is not None:
@@ -65,13 +59,27 @@ def get_fauna_by_identifier(
 
     fauna_list = session.query(Fauna).filter(or_(*search_conditions)).all()
 
-    # if not fauna_list:
-    #     raise HTTPException(
-    #         status_code=404,
-    #         detail="No fauna found",
-    #     )
-
     return [FaunaOut(**fauna.dict()) for fauna in fauna_list]
+
+@router.get("/label", response_model=FaunaOut)
+def get_fauna_by_label(
+    label: str, session: SessionDep, current_user: CurrentUser
+) -> Any:
+    """
+    Get a specific Fauna by label.
+    """
+    if current_user.user_type not in [UserType.SUPERUSER, UserType.DASHBOARD, UserType.REGULAR]:
+        raise HTTPException(
+            status_code=403,
+            detail="The user doesn't have enough privileges",
+        )
+    fauna = session.query(Fauna).filter(Fauna.label == label).first()
+    if not fauna:
+        raise HTTPException(
+            status_code=404,
+            detail="There is no Fauna of this label.",
+        )
+    return fauna
 
 @router.get("/{id}", response_model=FaunaOut)
 def get_fauna_by_id(
@@ -87,6 +95,7 @@ def get_fauna_by_id(
         )
     fauna = session.get(Fauna, id)
     return fauna
+
 
 @router.put("/{id}", response_model=FaunaOut)
 def update_fauna(
