@@ -10,7 +10,7 @@ router = APIRouter()
 
 OLLAMA_API_URL = "http://ollama:11434/api/generate"
 
-@router.post("/chat")
+@router.post("/chat", dependencies=[Depends(get_current_user)])
 async def chat(prompt: str = Query(..., min_length=1)):
     payload = {
         "model": "phi3:mini",

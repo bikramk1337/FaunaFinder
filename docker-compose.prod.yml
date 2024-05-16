@@ -80,11 +80,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: '8G'
+          cpus: '3'
+          memory: '6G'
         reservations:
           cpus: '1'
-          memory: '8G'
+          memory: '2G'
     networks:
       - web
 
