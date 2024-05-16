@@ -1,11 +1,12 @@
 from typing import List, Any
 
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from fastapi.responses import Response
 from sqlmodel import func, select
 
 from app.classifier.classifier import ImageClassifier
 from app.api.dependencies import get_current_user, SessionDep, CurrentUser
-from app.api.aws_utils import upload_image_to_s3
+from app.api.aws_utils import upload_image_to_s3,get_image_from_s3_url
 
 from app.db.models import UserType
 from app.db.fauna import ClassificationHistory, ClassificationOut, ClassificationsOut
@@ -13,7 +14,7 @@ from app.db.fauna import ClassificationHistory, ClassificationOut, Classificatio
 
 router = APIRouter()
 
-model_path = 'app/assets/models/resnet50_imagenet.h5'
+model_path = 'app/assets/models/fine_tuned_model.h5'
 classifier = ImageClassifier(model_path)
 
 router = APIRouter()
@@ -39,6 +40,19 @@ async def test_upload_image(file: UploadFile = File(...)):
     except Exception as e:
         # Handle any other exceptions and return an error response
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/image-from-url")
+async def get_image_from_url(image_url: str):
+    try:
+        # Get the image data from the S3 bucket URL
+        image_data = await get_image_from_s3_url(image_url)
+
+        # Create a response with the image data
+        return Response(content=image_data, media_type="image/jpeg")
+
+    except Exception as e:
+        # Handle any exceptions and return an error response
+        raise HTTPException(status_code=500, detail=str(e))
     
 @router.post("/predict", dependencies=[Depends(get_current_user)])
 async def predict(file: UploadFile = File(...)):
@@ -49,17 +63,9 @@ async def predict(file: UploadFile = File(...)):
     image = await file.read()
     
     # Make predictions using the ImageClassifier
-    predictions = classifier.predict(image)
+    prediction = classifier.predict(image)
 
-    # Format the predictions
-    response = []
-    for pred in predictions:
-        response.append({
-            "class": pred[1],
-            "confidence": float(pred[2])
-        })
-
-    return {"predictions": response}
+    return prediction
 
 @router.post("/upload-and-predict", dependencies=[Depends(get_current_user)])
 async def upload_and_predict(session: SessionDep, current_user: CurrentUser, file: UploadFile = File(...)):
@@ -71,30 +77,35 @@ async def upload_and_predict(session: SessionDep, current_user: CurrentUser, fil
         image = await file.read()
         
         # Upload the image to S3 and get the URL
-        file_url = await upload_image_to_s3(file.filename, image)
+        try:
+            file_url = await upload_image_to_s3(file.filename, image)
+        except Exception as e:
+            file_url = "" 
+            print(f"Error uploading image to S3: {str(e)}")  
 
         # Make predictions using the ImageClassifier
-        predictions = classifier.predict(image)
-
-        # Format the predictions
-        formatted_predictions = []
-        for pred in predictions:
-            formatted_predictions.append({
-                "class": pred[1],
-                "confidence": float(pred[2])
-            })
+        prediction = classifier.predict(image)
 
         # Store the predictions and image URL in the classification history table
         classification_history = ClassificationHistory(
             user_id=current_user.id,
             image_url=file_url,
-            prediction=str(formatted_predictions)
+            prediction=str(prediction)
         )
         session.add(classification_history)
         session.commit()
         session.refresh(classification_history)
 
-        return {"message": "Image uploaded and classified successfully", "predictions": formatted_predictions}
+        # Convert the classification history object to a dictionary
+        classification_history_dict = {
+            "id": classification_history.id,
+            "user_id": classification_history.user_id,
+            "image_url": classification_history.image_url,
+            "prediction": classification_history.prediction,
+        }
+
+        return {"message": "Image classified successfully", "classification_history": classification_history_dict}
+
 
     except HTTPException as e:
         raise e

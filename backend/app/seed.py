@@ -13,37 +13,44 @@ def init() -> None:
 
 def populate_fauna(file_path: str) -> None:
     with Session(engine) as session:
-        with open(file_path, 'r') as file:
-            csv_reader = csv.DictReader(file)
-            for row in csv_reader:
-                label = row['label']
+        try:
+            with open(file_path, 'r') as file:
+                reader = csv.reader(file)
+                headers = [header.strip().strip('"') for header in next(reader)]
+                csv_reader = csv.DictReader(file, fieldnames=headers, quotechar='"')
+                
+                for row in csv_reader:
+                    label = row['label']
 
-                # Check if the label already exists in the database
-                existing_fauna = session.exec(
-                    select(Fauna).where(Fauna.label == label)
-                ).first()
-                if existing_fauna:
-                    print(f"Skipping fauna with label: {label}. Already exists in the database.")
-                    continue
+                    # Check if the label already exists in the database
+                    existing_fauna = session.exec(
+                        select(Fauna).where(Fauna.label == label)
+                    ).first()
+                    if existing_fauna:
+                        print(f"Skipping fauna with label: {label}. Already exists in the database.")
+                        continue
 
-                fauna = Fauna(
-                    label=label,
-                    common_name=row['common_name'],
-                    other_names=row['other_names'],
-                    description=row['description'],
-                    scientific_name=row['scientific_name'],
-                    class_name=row['class_name'],
-                    order=row['order'],
-                    family=row['family'],
-                    size=row['size'],
-                    habitat=row['habitat'],
-                    diet=row['diet'],
-                    breeding=row['breeding'],
-                    geographic_range=row['geographic_range'],
-                    other_info=row['other_info']
-                )
-                session.add(fauna)
-        session.commit()
+                    fauna = Fauna(
+                        label=label,
+                        common_name=row['common_name'],
+                        other_names=row['other_names'],
+                        description=row['description'],
+                        scientific_name=row['scientific_name'],
+                        class_name=row['class_name'],
+                        order=row['order'],
+                        family=row['family'],
+                        size=row['size'],
+                        habitat=row['habitat'],
+                        diet=row['diet'],
+                        breeding=row['breeding'],
+                        geographic_range=row['geographic_range'],
+                        other_info=row['other_info']
+                    )
+                    session.add(fauna)
+            session.commit()
+        except Exception as e:
+            logger.error(f"Failed to read or process file {file_path}: {e}")
+            session.rollback()
 
 def main() -> None:
     logger.info("Creating seed data")
