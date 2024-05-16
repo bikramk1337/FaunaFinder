@@ -43,7 +43,15 @@ def create_user(*, session: SessionDep, user_in: UserCreate) -> Any:
 
     user = crud.create_user(session=session, user_create=user_in)
     return user
-    
+
+
+@router.get("/current_user", response_model=UserOut)
+def get_current_user(*, session: SessionDep, current_user: CurrentUser) -> Any:
+    """
+    Get current user.
+    """
+    return current_user
+
 
 @router.get("/{user_id}", response_model=UserOut)
 def get_user_by_id(
@@ -61,6 +69,7 @@ def get_user_by_id(
             detail="The user doesn't have enough privileges",
         )
     return user
+
 
 @router.patch(
     "/{user_id}",
@@ -87,13 +96,6 @@ def update_user(*, session: SessionDep, user_id: int, user_in: UserUpdate) -> An
 
     db_user = crud.update_user(session=session, db_user=db_user, user_in=user_in)
     return db_user
-
-@router.get("/current_user", response_model=UserOut)
-def get_current_user(*, session: SessionDep, current_user: CurrentUser) -> Any:
-    """
-    Get current user.
-    """
-    return current_user
 
 
 @router.patch("/current_user/update", response_model=UserOut)
@@ -137,6 +139,7 @@ def update_current_user_password(
     session.commit()
     return Message(message="Password updated successfully")
 
+
 @router.get(
     "/", dependencies=[Depends(get_current_active_superuser)], response_model=UsersOut
 )
@@ -152,4 +155,3 @@ def get_users(session: SessionDep) -> Any:
     users = session.exec(statement).all()
 
     return UsersOut(data=users, count=count)
-
