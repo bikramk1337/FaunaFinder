@@ -23,6 +23,7 @@ numpy = "^1.26.4"
 tensorflow = "^2.16.1"
 pillow = "^10.2.0"
 python-magic = "^0.4.27"
+aiobotocore = "^2.12.3"
 
 [tool.poetry.dev-dependencies]
 alembic = "^1.13.1"

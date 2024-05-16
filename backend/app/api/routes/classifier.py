@@ -1,11 +1,12 @@
 from typing import List, Any
 
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from fastapi.responses import Response
 from sqlmodel import func, select
 
 from app.classifier.classifier import ImageClassifier
 from app.api.dependencies import get_current_user, SessionDep, CurrentUser
-from app.api.aws_utils import upload_image_to_s3
+from app.api.aws_utils import upload_image_to_s3,get_image_from_s3_url
 
 from app.db.models import UserType
 from app.db.fauna import ClassificationHistory, ClassificationOut, ClassificationsOut
@@ -38,6 +39,19 @@ async def test_upload_image(file: UploadFile = File(...)):
 
     except Exception as e:
         # Handle any other exceptions and return an error response
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/image-from-url")
+async def get_image_from_url(image_url: str):
+    try:
+        # Get the image data from the S3 bucket URL
+        image_data = await get_image_from_s3_url(image_url)
+
+        # Create a response with the image data
+        return Response(content=image_data, media_type="image/jpeg")
+
+    except Exception as e:
+        # Handle any exceptions and return an error response
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.post("/predict", dependencies=[Depends(get_current_user)])
