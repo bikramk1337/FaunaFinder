@@ -9,35 +9,43 @@ from app.db.models import TimestampMixin
 
 # SQLModel Classes for Fauna Lookup table
 class FaunaBase(SQLModel):
-    image_label: int | None = None
-    common_name: str
+    label: str
+    common_name: str | None = None
+    other_names: str | None = None
     description: str | None = None
+    
     # Scientific Classification
-    scientific_name: str
+    scientific_name: str | None = None
+    class_name: str | None = None
+    order: str | None = None
     family: str | None = None
-    fauna_class: str | None = None
-    fauna_infra_class: str | None = None
+    
     # Other details
-    conservation_status: str | None = None
+    size: str | None = None
     habitat: str | None = None
     diet: str | None = None
-    lifespan: int | None = None
+    breeding: str | None = None
     geographic_range: str | None = None
-    fun_fact: str | None = None
+    other_info: str | None = None
 
 class FaunaUpdate(FaunaBase):
     common_name: str | None = None
+    other_names: str | None = None
     description: str | None = None
+    
+    # Scientific Classification
     scientific_name: str | None = None
+    class_name: str | None = None
+    order: str | None = None
     family: str | None = None
-    fauna_class: str | None = None
-    fauna_infra_class: str | None = None
-    conservation_status: str | None = None
+    
+    # Other details
+    size: str | None = None
     habitat: str | None = None
     diet: str | None = None
-    lifespan: int | None = None
+    breeding: str | None = None
     geographic_range: str | None = None
-    fun_fact: str | None = None
+    other_infp: str | None = None
 
 class FaunaOut(FaunaBase, SQLModel):
     id: int
