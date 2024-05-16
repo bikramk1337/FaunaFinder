@@ -1,22 +1,21 @@
+import json
 import numpy as np
-import tensorflow as tf
-from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
+import keras
 from PIL import Image
-import io
+from io import BytesIO
+from tensorflow.keras.preprocessing import image
 
 class ImageClassifier:
     def __init__(self, model_path):
-        self.model = tf.keras.models.load_model(model_path)
-
-    def preprocess_image(self, image):
-        img = Image.open(io.BytesIO(image)).resize((224, 224))
-        img_array = np.array(img)
-        img_array = np.expand_dims(img_array, axis=0)
-        img_array = preprocess_input(img_array)
-        return img_array
-
-    def predict(self, image):
-        preprocessed_image = self.preprocess_image(image)
-        predictions = self.model.predict(preprocessed_image)
-        decoded_predictions = decode_predictions(predictions, top=3)[0]
-        return decoded_predictions
+        self.model = keras.models.load_model(model_path)
+        with open('app/classifier/class_data.json', 'r') as f:
+            self.class_list = json.load(f)
+    
+    def predict(self, image_data):
+        img = Image.open(BytesIO(image_data))
+        img = img.resize((256, 256))
+        img = image.img_to_array(img)
+        img = np.expand_dims(img, axis=0)  # Add batch dimension
+        pred = self.model.predict(img)
+        output_class = self.class_list[np.argmax(pred)]
+        return output_class
