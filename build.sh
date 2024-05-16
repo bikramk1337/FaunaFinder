@@ -35,4 +35,7 @@ if [ "$1" = "dev" ] || [ "$1" = "prod" ]; then
 
   # Create initial data
   docker exec ff-backend python3 app/seed.py
+
+  # Pull phi3:mini
+  docker exec ollama ollama pull phi3:mini
 fi
