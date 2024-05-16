@@ -25,6 +25,7 @@ keras = "2.15.0"
 pillow = "^10.2.0"
 python-magic = "^0.4.27"
 aiobotocore = "^2.12.3"
+httpx = "^0.27.0"
 
 [tool.poetry.dev-dependencies]
 alembic = "^1.13.1"

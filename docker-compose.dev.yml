@@ -57,10 +57,30 @@ services:
       - REACT_APP_BASE_URL=http://localhost:8888/api/v1
     networks:
       - web
+    
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: '4G'
+        reservations:
+          cpus: '1'
+          memory: '2G'
+    networks:
+      - web
 
 volumes:
   db-data:
   node-modules:
+  ollama-data:
 
 networks:
   web:
