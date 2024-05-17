@@ -18,7 +18,7 @@ async def chat(prompt: str = Query(..., min_length=1)):
         "stream": False
     }
 
-    async with httpx.AsyncClient(timeout=60.0) as client:
+    async with httpx.AsyncClient(timeout=180.0) as client:
         try:
             response = await client.post(OLLAMA_API_URL, json=payload)
             response.raise_for_status()
