@@ -10,7 +10,7 @@ import { RootState } from "../store";
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8888/api/v1/",
+    baseUrl: process.env.REACT_APP_BASE_URL,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.accessToken;
       if (token) {
@@ -23,7 +23,8 @@ export const userApi = createApi({
   tagTypes: ["User"],
   endpoints: (builder) => ({
     getUsers: builder.query<IUsersResponse, IPaginationRequest>({
-      query: ({ skip, limit }) => `users?skip=${skip}&limit=${limit}`,
+      query: ({ skip, limit }) =>
+        `users?skip=${skip ?? 0}&limit=${limit ?? 1000}`,
       providesTags: ["User"],
     }),
     getUserById: builder.query<IUser, string>({
