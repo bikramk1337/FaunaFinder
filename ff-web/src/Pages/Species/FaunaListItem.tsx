@@ -34,12 +34,12 @@ const FaunaListItem = (props: Props) => {
   return (
     <Grid item sm={12} lg={12}>
       <Card sx={{ display: "flex" }} variant="outlined">
-        <CardMedia
+        {/* <CardMedia
           component="img"
           sx={{ width: 200 }}
           image="https://www.aces.edu/wp-content/uploads/2023/04/iStock-1232014586.jpg"
           alt={fauna.common_name}
-        />
+        /> */}
         <Box width={"100%"}>
           <CardContent>
             <Link

@@ -156,12 +156,9 @@ const FaunaDetailsModal = (props: Props) => {
                   />
                   <InfoPairContainer
                     name="Class"
-                    value={data?.fauna_class || "-"}
+                    value={data?.class_name || "-"}
                   />
-                  <InfoPairContainer
-                    name="Infraclass"
-                    value={data?.fauna_infra_class || "-"}
-                  />
+                  <InfoPairContainer name="Order" value={data?.order || "-"} />
                 </Grid>
                 <Grid item sm={12} md={6}>
                   <InfoPairContainer
@@ -173,25 +170,22 @@ const FaunaDetailsModal = (props: Props) => {
                     value={data?.geographic_range || "-"}
                   />
                   <InfoPairContainer name="Diet" value={data?.diet || "-"} />
+                  <InfoPairContainer name="Size" value={data?.size || "-"} />
                   <InfoPairContainer
-                    name="Lifespan"
-                    value={data?.lifespan ? data?.lifespan + " years" : "-"}
+                    name="Fun fact"
+                    value={data?.breeding || "-"}
                   />
                 </Grid>
               </Grid>
               <Divider variant="middle" sx={{ my: 2 }} />
               <InfoPairContainer
-                name="Conservation status"
-                value={data?.conservation_status || "-"}
+                name="Other info"
+                value={data?.other_info || "-"}
               />
               <Divider variant="middle" sx={{ my: 2 }} />
               <InfoPairContainer
                 name="Description"
                 value={data?.description || "-"}
-              />
-              <InfoPairContainer
-                name="Fun fact"
-                value={data?.fun_fact || "-"}
               />
             </DialogContent>
           </>

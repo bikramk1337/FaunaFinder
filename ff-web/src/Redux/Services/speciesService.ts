@@ -38,7 +38,7 @@ export const faunaApi = createApi({
       providesTags: ["Fauna"],
     }),
 
-    updateFauna: builder.mutation<ISpeciesResponse, ISpecies>({
+    updateFauna: builder.mutation<ISpecies, ISpecies>({
       query: (fauna) => ({
         url: `fauna/${fauna.id}`,
         method: "PATCH",
@@ -50,7 +50,7 @@ export const faunaApi = createApi({
       }),
       invalidatesTags: ["Fauna"],
     }),
-    deleteFauna: builder.mutation<ISpeciesResponse, string>({
+    deleteFauna: builder.mutation<ISpecies, string>({
       query: (id) => ({
         url: `fauna/${id}`,
         method: "DELETE",

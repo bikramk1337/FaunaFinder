@@ -25,19 +25,20 @@ const EditFauna = (props: Props) => {
   ] = useUpdateFaunaMutation();
 
   const initialEditData: ISpecies = {
-    image_label: 0,
+    label: "",
     common_name: "",
+    other_names: "",
     description: "",
     scientific_name: "",
+    class_name: "",
+    order: "",
     family: "",
-    fauna_class: "",
-    fauna_infra_class: "",
-    conservation_status: "",
+    size: "",
     habitat: "",
     diet: "",
-    lifespan: 0,
+    breeding: "",
     geographic_range: "",
-    fun_fact: "",
+    other_info: "",
     id: 0,
   };
 
@@ -152,11 +153,11 @@ const EditFauna = (props: Props) => {
                 id="fauna_class"
                 placeholder="Enter Class"
                 type="text"
-                value={editData.fauna_class}
+                value={editData.class_name}
                 onChange={(e) =>
                   setEditData({
                     ...editData,
-                    fauna_class: e.target.value,
+                    class_name: e.target.value,
                   })
                 }
                 required
@@ -164,15 +165,15 @@ const EditFauna = (props: Props) => {
             </Grid>
             <Grid item xs={12} lg={4}>
               <FFTextInput
-                formLabel="Infraclass"
-                id="fauna_infra_class"
-                placeholder="Enter infraclass"
+                formLabel="Order"
+                id="order"
+                placeholder="Enter order"
                 type="text"
-                value={editData.fauna_infra_class}
+                value={editData.order}
                 onChange={(e) =>
                   setEditData({
                     ...editData,
-                    fauna_infra_class: e.target.value,
+                    order: e.target.value,
                   })
                 }
                 required
@@ -198,15 +199,15 @@ const EditFauna = (props: Props) => {
 
             <Grid item xs={12} lg={4}>
               <FFTextInput
-                formLabel="Lifespan"
-                id="lifespan"
-                placeholder="Enter lifespan"
-                type="number"
-                value={editData.lifespan}
+                formLabel="Size"
+                id="size"
+                placeholder="Enter size"
+                type="text"
+                value={editData.size}
                 onChange={(e) =>
                   setEditData({
                     ...editData,
-                    lifespan: parseInt(e.target.value),
+                    size: e.target.value,
                   })
                 }
                 required
@@ -235,6 +236,24 @@ const EditFauna = (props: Props) => {
             <Grid item xs={12} lg={12}>
               <Grid item xs={12} lg={6}>
                 <FFTextInput
+                  formLabel="Breeding"
+                  id="breeding"
+                  placeholder="Enter breeding"
+                  type="text"
+                  value={editData.breeding}
+                  onChange={(e) =>
+                    setEditData({
+                      ...editData,
+                      breeding: e.target.value,
+                    })
+                  }
+                  required
+                />
+              </Grid>
+            </Grid>
+            <Grid item xs={12} lg={12}>
+              <Grid item xs={12} lg={6}>
+                <FFTextInput
                   formLabel="Geographic range"
                   id="geographic_range"
                   placeholder="Enter geographic range"
@@ -244,25 +263,6 @@ const EditFauna = (props: Props) => {
                     setEditData({
                       ...editData,
                       geographic_range: e.target.value,
-                    })
-                  }
-                  required
-                />
-              </Grid>
-            </Grid>
-
-            <Grid item xs={12} lg={12}>
-              <Grid item xs={12} lg={6}>
-                <FFTextInput
-                  formLabel="Conservation status"
-                  id="conservation_status"
-                  placeholder="Enter conservation status"
-                  type="text"
-                  value={editData.conservation_status}
-                  onChange={(e) =>
-                    setEditData({
-                      ...editData,
-                      conservation_status: e.target.value,
                     })
                   }
                   required
@@ -283,25 +283,6 @@ const EditFauna = (props: Props) => {
                   setEditData({
                     ...editData,
                     description: e.target.value,
-                  })
-                }
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <FFTextInput
-                multiline
-                rows={4}
-                formLabel="Fun fact"
-                id="fun_fact"
-                placeholder="Enter fun fact"
-                type="text"
-                value={editData.fun_fact}
-                onChange={(e) =>
-                  setEditData({
-                    ...editData,
-                    fun_fact: e.target.value,
                   })
                 }
                 required
