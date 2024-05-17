@@ -1,22 +1,31 @@
-import { Box, Card, Grid } from "@mui/material";
+import { Box, Card, Grid, Typography } from "@mui/material";
 import {
   BarChart,
+  GaugeContainer,
+  GaugeReferenceArc,
+  GaugeValueArc,
+  GaugeValueText,
   PieChart,
   ScatterChart,
   axisClasses,
   cheerfulFiestaPalette,
+  useGaugeState,
 } from "@mui/x-charts";
 import React from "react";
+import { themeLight } from "../../Themes";
+import { useGetUsersQuery } from "../../Redux/Services/userService";
+import { useGetFaunaQuery } from "../../Redux/Services/speciesService";
+import { useGetClassificationHistoryQuery } from "../../Redux/Services/classifierService";
 
 const palette = [
-  "#66c2a5",
-  "#fc8d62",
-  "#8da0cb",
-  "#e78ac3",
-  "#a6d854",
-  "#ffd92f",
-  "#e5c494",
-  "#b3b3b3",
+  "#03c98a",
+  "#f14704",
+  "#023eca",
+  "#e90391",
+  "#89db06",
+  "#ffd102",
+  "#e48901",
+  "#c40303",
 ];
 const chartSetting = {
   yAxis: [
@@ -285,10 +294,202 @@ const data = [
 const valueFormatter = (value: number | null) => `${value}`;
 type Props = {};
 
+function GaugePointer() {
+  const { valueAngle, outerRadius, cx, cy } = useGaugeState();
+
+  if (valueAngle === null) {
+    // No value to display
+    return null;
+  }
+
+  const target = {
+    x: cx + outerRadius * Math.sin(valueAngle),
+    y: cy - outerRadius * Math.cos(valueAngle),
+  };
+  return (
+    <g>
+      <circle cx={cx} cy={cy} r={5} fill={"#ffbe6f"} />
+      <path
+        d={`M ${cx} ${cy} L ${target.x} ${target.y}`}
+        stroke={"#ffbe6f"}
+        strokeWidth={3}
+      />
+    </g>
+  );
+}
+
 const Dashboard = (props: Props) => {
+  const {
+    data: userData,
+    isLoading: userIsLoading,
+    isError: userIsError,
+  } = useGetUsersQuery({});
+
+  const {
+    data: faunaData,
+    isLoading: faunaIsLoading,
+    isError: faunaIsError,
+  } = useGetFaunaQuery();
+
+  const {
+    data: classifierData,
+    isLoading: classifierIsLoading,
+    isError: classifierIsError,
+  } = useGetClassificationHistoryQuery();
+
   return (
     <Box>
       <Grid container spacing={4}>
+        <Grid item xs={6} lg={3}>
+          <Card variant="outlined" sx={{ height: 200, p: 2 }}>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              Total faunas
+            </Typography>
+            {faunaIsLoading ? <Typography>Loading...</Typography> : <></>}
+            {faunaIsError ? <Typography>Error!</Typography> : <></>}
+            {!faunaIsLoading && faunaData && faunaData.count ? (
+              <Typography
+                variant="h1"
+                component="div"
+                sx={{ color: "#cac000" }}
+              >
+                {faunaData.count}
+              </Typography>
+            ) : (
+              <></>
+            )}
+          </Card>
+        </Grid>
+        <Grid item xs={6} lg={3}>
+          <Card variant="outlined" sx={{ height: 200, p: 2 }}>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              Total faunas identified
+            </Typography>
+            {classifierIsLoading ? <Typography>Loading...</Typography> : <></>}
+            {classifierIsError ? <Typography>Error!</Typography> : <></>}
+            {!classifierIsLoading && classifierData && classifierData.data ? (
+              <Typography
+                variant="h1"
+                component="div"
+                sx={{ color: "#9d005e" }}
+              >
+                {classifierData.count}
+              </Typography>
+            ) : (
+              <></>
+            )}
+          </Card>
+        </Grid>
+        <Grid item xs={6} lg={3}>
+          <Card variant="outlined" sx={{ height: 200, p: 2 }}>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              Admin users
+            </Typography>
+            {userIsLoading ? <Typography>Loading...</Typography> : <></>}
+            {userIsError ? <Typography>Error!</Typography> : <></>}
+            {!userIsLoading && userData && userData.data ? (
+              <Typography
+                variant="h1"
+                component="div"
+                sx={{ color: "#00869d" }}
+              >
+                {
+                  userData.data.filter((item) =>
+                    ["superuser", "dashboard"].includes(item.user_type)
+                  ).length
+                }
+              </Typography>
+            ) : (
+              <></>
+            )}
+          </Card>
+        </Grid>
+        <Grid item xs={6} lg={3}>
+          <Card variant="outlined" sx={{ height: 200, p: 2 }}>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              Mobile app users
+            </Typography>
+            {userIsLoading ? <Typography>Loading...</Typography> : <></>}
+            {userIsError ? <Typography>Error!</Typography> : <></>}
+            {!userIsLoading && userData && userData.data ? (
+              <Typography
+                variant="h1"
+                component="div"
+                sx={{ color: "#00619d" }}
+              >
+                {
+                  userData.data.filter((item) =>
+                    ["regular"].includes(item.user_type)
+                  ).length
+                }
+              </Typography>
+            ) : (
+              <></>
+            )}
+          </Card>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Card
+            variant="outlined"
+            sx={{
+              height: 250,
+              p: 2,
+            }}
+          >
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              Classifier accuracy
+            </Typography>
+            <Box
+              sx={{
+                // height: 200,
+
+                display: "flex",
+                // justifyContent: "space-around",
+                alignItems: "center",
+              }}
+            >
+              <Typography
+                variant="h1"
+                component="div"
+                sx={{ color: "#2f9d00" }}
+              >
+                90%
+              </Typography>
+              <GaugeContainer
+                // width={150}
+                height={150}
+                startAngle={-110}
+                endAngle={110}
+                value={90}
+                // sx={{ bgcolor: "red" }}
+              >
+                <GaugeReferenceArc />
+                <GaugeValueArc />
+                <GaugePointer />
+              </GaugeContainer>
+            </Box>
+          </Card>
+        </Grid>
         <Grid item xs={12} lg={8}>
           <Card variant="outlined" sx={{ height: 400, p: 2 }}>
             <BarChart

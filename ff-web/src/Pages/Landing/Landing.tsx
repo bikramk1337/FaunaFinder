@@ -194,7 +194,10 @@ const Landing = (props: Props) => {
           >
             <Grid container spacing={4}>
               <Grid item xs={12} lg={12}>
-                <Paper elevation={0} sx={{ padding: 4, bgcolor: "brand.main" }}>
+                <Paper
+                  elevation={0}
+                  sx={{ padding: 4, bgcolor: "brand.light" }}
+                >
                   <svg
                     fill="#000000"
                     height={50}
@@ -215,7 +218,10 @@ const Landing = (props: Props) => {
                 </Paper>
               </Grid>
               <Grid item xs={12} lg={12}>
-                <Paper elevation={0} sx={{ padding: 4, bgcolor: "brand.main" }}>
+                <Paper
+                  elevation={0}
+                  sx={{ padding: 4, bgcolor: "brand.light" }}
+                >
                   <svg
                     fill="#000000"
                     height={50}
@@ -237,7 +243,10 @@ const Landing = (props: Props) => {
                 </Paper>
               </Grid>
               <Grid item xs={12} lg={12}>
-                <Paper elevation={0} sx={{ padding: 4, bgcolor: "brand.main" }}>
+                <Paper
+                  elevation={0}
+                  sx={{ padding: 4, bgcolor: "brand.light" }}
+                >
                   <svg
                     fill="#000000"
                     height={50}

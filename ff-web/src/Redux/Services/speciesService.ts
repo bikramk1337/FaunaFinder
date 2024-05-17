@@ -5,7 +5,7 @@ import { ISpecies, ISpeciesQueryParams, ISpeciesResponse } from "../../Types";
 export const faunaApi = createApi({
   reducerPath: "faunaApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8888/api/v1/",
+    baseUrl: process.env.REACT_APP_BASE_URL,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.accessToken;
       if (token) {
@@ -18,7 +18,7 @@ export const faunaApi = createApi({
   tagTypes: ["Fauna"],
   endpoints: (builder) => ({
     getFauna: builder.query<ISpeciesResponse, void>({
-      query: () => `fauna`,
+      query: () => `fauna?skip=0&limit=1000`,
       providesTags: ["Fauna"],
     }),
     getFaunaByParameters: builder.query<ISpecies[], ISpeciesQueryParams>({
@@ -52,7 +52,7 @@ export const faunaApi = createApi({
     }),
     deleteFauna: builder.mutation<ISpeciesResponse, string>({
       query: (id) => ({
-        url: `users/${id}`,
+        url: `fauna/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Fauna"],

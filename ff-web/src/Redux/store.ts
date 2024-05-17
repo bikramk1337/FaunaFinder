@@ -5,6 +5,7 @@ import speciesReducer from "./Slices/speciesSlice";
 import { userApi } from "./Services/userService";
 import { loginApi } from "./Services/loginService";
 import { faunaApi } from "./Services/speciesService";
+import { classifierApi } from "./Services/classifierService";
 
 export const store = configureStore({
   reducer: {
@@ -14,12 +15,14 @@ export const store = configureStore({
     [loginApi.reducerPath]: loginApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [faunaApi.reducerPath]: faunaApi.reducer,
+    [classifierApi.reducerPath]: classifierApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(loginApi.middleware)
       .concat(userApi.middleware)
-      .concat(faunaApi.middleware),
+      .concat(faunaApi.middleware)
+      .concat(classifierApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
