@@ -1,3 +1,6 @@
 [submodule "FF-ImageDS"]
 	path = FF-ImageDS
 	url = git@github.com:bikramk1337/FF-ImageDS.git
+[submodule "FF-Mobile"]
+	path = FF-Mobile
+	url = git@github.com:bikramk1337/FF-Mobile.git

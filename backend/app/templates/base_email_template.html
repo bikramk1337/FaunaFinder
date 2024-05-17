@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 20px;
+        }
+        .divider {
+            border-top: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 40px;
+            color: #999999;
+            font-size: 14px;
+        }
+        </style>
+        {% block styles %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.gnu.org/graphics/heckert_gnu.transp.small.png" alt="Fauna Finder Logo" class="logo">
+        <div class="divider"></div>
+        {% block content %}{% endblock %}
+        <div class="divider"></div>
+        <div class="footer">
+            &copy; 2024 Fauna Finder
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+[
+  {
+    "NCAStatusCode": "CR",
+    "Description": "Critically endangered",
+    "color": "#dc2f02"
+  },
+  { "NCAStatusCode": "E", "Description": "Endangered", "color": "#e85d04" },
+  { "NCAStatusCode": "EX", "Description": "Extinct", "color": "#03071e" },
+  {
+    "NCAStatusCode": "PE",
+    "Description": "Extinct in the wild",
+    "color": "#d00000"
+  },
+  { "NCAStatusCode": "I", "Description": "International", "color": "#6a4c93" },
+  { "NCAStatusCode": "C", "Description": "Least concern", "color": "#8ac926" },
+  {
+    "NCAStatusCode": "NT",
+    "Description": "Near threatened",
+    "color": "#ffba08"
+  },
+  { "NCAStatusCode": "P", "Description": "Prohibited", "color": "#6a4c93" },
+  { "NCAStatusCode": "R", "Description": "Rare (omitted)", "color": "#6a4c93" },
+  {
+    "NCAStatusCode": "SL",
+    "Description": "Special least concern",
+    "color": "#22577a"
+  },
+  { "NCAStatusCode": "V", "Description": "Vulnerable", "color": "#f48c06" }
+]
