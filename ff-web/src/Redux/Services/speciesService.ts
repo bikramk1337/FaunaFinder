@@ -23,9 +23,7 @@ export const faunaApi = createApi({
     }),
     getFaunaByParameters: builder.query<ISpecies[], ISpeciesQueryParams>({
       query: (params) =>
-        `fauna/search?${
-          params.label ? `&label=${parseInt(params.label)}` : ""
-        }${
+        `fauna/search?${params.label ? `&label=${params.label}` : ""}${
           params.scientific_name
             ? `&scientific_name=${params.scientific_name}`
             : ""
@@ -38,7 +36,7 @@ export const faunaApi = createApi({
       providesTags: ["Fauna"],
     }),
 
-    updateFauna: builder.mutation<ISpeciesResponse, ISpecies>({
+    updateFauna: builder.mutation<ISpecies, ISpecies>({
       query: (fauna) => ({
         url: `fauna/${fauna.id}`,
         method: "PATCH",
@@ -50,7 +48,7 @@ export const faunaApi = createApi({
       }),
       invalidatesTags: ["Fauna"],
     }),
-    deleteFauna: builder.mutation<ISpeciesResponse, string>({
+    deleteFauna: builder.mutation<ISpecies, string>({
       query: (id) => ({
         url: `fauna/${id}`,
         method: "DELETE",

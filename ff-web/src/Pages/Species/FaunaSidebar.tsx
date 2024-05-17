@@ -63,9 +63,7 @@ const FaunaSidebar = (props: Props) => {
               dispatch(
                 setFilterData({
                   ...filterValues,
-                  label: isNaN(parseInt(e.target.value))
-                    ? ``
-                    : `${parseInt(e.target.value)}`,
+                  label: e.target.value,
                 })
               )
             }

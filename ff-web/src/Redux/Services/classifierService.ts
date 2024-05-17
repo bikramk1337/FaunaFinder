@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
 import { ISpecies, ISpeciesQueryParams, ISpeciesResponse } from "../../Types";
+import { IClassificationHistoryResponse } from "../../Types/ClassificationHistory";
 
 export const classifierApi = createApi({
   reducerPath: "classifierApi",
@@ -16,7 +17,10 @@ export const classifierApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getClassificationHistory: builder.query<ISpeciesResponse, void>({
+    getClassificationHistory: builder.query<
+      IClassificationHistoryResponse,
+      void
+    >({
       query: () => `classifier/classification-histories?skip=0&limit=1000`,
     }),
   }),

@@ -16,6 +16,7 @@ import { themeLight } from "../../Themes";
 import { useGetUsersQuery } from "../../Redux/Services/userService";
 import { useGetFaunaQuery } from "../../Redux/Services/speciesService";
 import { useGetClassificationHistoryQuery } from "../../Redux/Services/classifierService";
+import { IClassificationHistory } from "../../Types/ClassificationHistory";
 
 const palette = [
   "#03c98a",
@@ -337,6 +338,30 @@ const Dashboard = (props: Props) => {
     isError: classifierIsError,
   } = useGetClassificationHistoryQuery();
 
+  const findTopFaunas = (arr: any) => {
+    if (arr.length > 0) {
+      // Step 1: Count the occurrences of each string
+      const countMap: any = {};
+      arr.forEach((item: any) => {
+        countMap[item] = (countMap[item] || 0) + 1;
+      });
+
+      // Step 2: Convert the object to an array of [string, count] pairs
+      const countArray = Object.entries(countMap);
+
+      // Step 3: Sort the array by count in descending order
+      // @ts-ignore
+      countArray.sort((a, b) => b[1] - a[1]);
+
+      // Step 4: Extract the top 3 items
+      const topThree = countArray.slice(0, 3).map((item) => item[0]);
+
+      return topThree;
+    } else {
+      return [];
+    }
+  };
+
   return (
     <Box>
       <Grid container spacing={4}>
@@ -473,7 +498,7 @@ const Dashboard = (props: Props) => {
                 component="div"
                 sx={{ color: "#2f9d00" }}
               >
-                90%
+                93%
               </Typography>
               <GaugeContainer
                 // width={150}
@@ -490,42 +515,92 @@ const Dashboard = (props: Props) => {
             </Box>
           </Card>
         </Grid>
-        <Grid item xs={12} lg={8}>
-          <Card variant="outlined" sx={{ height: 400, p: 2 }}>
-            <BarChart
-              dataset={dataset}
-              xAxis={[{ scaleType: "band", dataKey: "month" }]}
-              series={[
-                {
-                  dataKey: "london",
-                  label: "North Wollongong",
-                  valueFormatter,
-                },
-                { dataKey: "paris", label: "Wollongong", valueFormatter },
-                { dataKey: "newYork", label: "Thirroul", valueFormatter },
-                { dataKey: "seoul", label: "Otford", valueFormatter },
-              ]}
-              colors={palette}
-              {...chartSetting}
-            />
+        <Grid item xs={12} lg={6}>
+          <Card
+            variant="outlined"
+            sx={{
+              // height: 250,
+              p: 2,
+              gap: 6,
+            }}
+          >
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              Top 3 Classified Faunas
+            </Typography>
+
+            <Card
+              variant="outlined"
+              sx={{
+                // height: 200,
+
+                display: "flex",
+                gap: 6,
+                // justifyContent: "space-around",
+                // alignItems: "center",
+                bgcolor: "#07a3f072",
+                padding: 2,
+                marginBottom: 2,
+              }}
+            >
+              <Typography>1.</Typography>
+              <Typography>
+                {classifierData &&
+                  (findTopFaunas(
+                    classifierData.data?.map((item) => item.prediction)
+                  )[0] ||
+                    "N/A")}
+              </Typography>
+            </Card>
+            <Card
+              variant="outlined"
+              sx={{
+                // height: 200,
+
+                display: "flex",
+                gap: 6,
+                // justifyContent: "space-around",
+                // alignItems: "center",
+                bgcolor: "#071ef071",
+                padding: 2,
+                marginBottom: 2,
+              }}
+            >
+              <Typography>2.</Typography>
+              <Typography>
+                {classifierData &&
+                  (findTopFaunas(
+                    classifierData.data?.map((item) => item.prediction)
+                  )[1] ||
+                    "N/A")}
+              </Typography>
+            </Card>
+            <Card
+              variant="outlined"
+              sx={{
+                display: "flex",
+                gap: 6,
+                bgcolor: "#6007f071",
+                padding: 2,
+                marginBottom: 2,
+              }}
+            >
+              <Typography>3.</Typography>
+              <Typography>
+                {classifierData &&
+                  (findTopFaunas(
+                    classifierData.data?.map((item) => item.prediction)
+                  )[2] ||
+                    "N/A")}
+              </Typography>
+            </Card>
           </Card>
         </Grid>
-        <Grid item xs={12} lg={4}>
-          <Card variant="outlined" sx={{ height: 400, p: 2 }}>
-            <PieChart
-              series={[
-                {
-                  data: [
-                    { id: 0, value: 10, label: "series A" },
-                    { id: 1, value: 15, label: "series B" },
-                    { id: 2, value: 20, label: "series C" },
-                  ],
-                },
-              ]}
-              colors={palette}
-            />
-          </Card>
-        </Grid>
+
+        {/*    
         <Grid item xs={12} lg={4}>
           <Card variant="outlined" sx={{ height: 400, p: 2 }}>
             <BarChart
@@ -544,34 +619,7 @@ const Dashboard = (props: Props) => {
               colors={palette}
             />
           </Card>
-        </Grid>
-        <Grid item xs={12} lg={8}>
-          <Card variant="outlined" sx={{ height: 400, p: 2 }}>
-            <ScatterChart
-              series={[
-                {
-                  label: "Series A",
-                  data: data.map((v) => ({ x: v.x1, y: v.y1, id: v.id })),
-                },
-                {
-                  label: "Series B",
-                  data: data.map((v) => ({ x: v.x1, y: v.y2, id: v.id })),
-                },
-              ]}
-              colors={[
-                "#fbb4ae",
-                "#b3cde3",
-                "#ccebc5",
-                "#decbe4",
-                "#fed9a6",
-                "#ffffcc",
-                "#e5d8bd",
-                "#fddaec",
-                "#f2f2f2",
-              ]}
-            />
-          </Card>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Box>
   );

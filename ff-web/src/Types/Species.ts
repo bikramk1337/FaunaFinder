@@ -1,17 +1,18 @@
 export interface ISpecies {
-  image_label: number;
+  label: string;
   common_name: string;
+  other_names: string;
   description: string;
   scientific_name: string;
+  class_name: string;
+  order: string;
   family: string;
-  fauna_class: string;
-  fauna_infra_class: string;
-  conservation_status: string;
+  size: string;
   habitat: string;
   diet: string;
-  lifespan: number;
+  breeding: string;
   geographic_range: string;
-  fun_fact: string;
+  other_info: string;
   id: number;
 }
 
