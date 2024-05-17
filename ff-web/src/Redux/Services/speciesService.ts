@@ -23,9 +23,7 @@ export const faunaApi = createApi({
     }),
     getFaunaByParameters: builder.query<ISpecies[], ISpeciesQueryParams>({
       query: (params) =>
-        `fauna/search?${
-          params.label ? `&label=${parseInt(params.label)}` : ""
-        }${
+        `fauna/search?${params.label ? `&label=${params.label}` : ""}${
           params.scientific_name
             ? `&scientific_name=${params.scientific_name}`
             : ""
