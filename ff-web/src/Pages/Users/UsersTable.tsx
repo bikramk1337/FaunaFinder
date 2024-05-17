@@ -12,7 +12,7 @@ const UsersTable = (props: Props) => {
   const navigate = useNavigate();
 
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize, setPageSize] = useState<number>(100);
 
   const { data, isLoading, isError } = useGetUsersQuery({
     skip: pageSize * (page - 1),
