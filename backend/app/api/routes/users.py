@@ -63,7 +63,7 @@ def get_user_by_id(
     user = session.get(User, user_id)
     if user == current_user:
         return user
-    if current_user.user_type != UserType.SUPERUSER:
+    if current_user.user_type not in [UserType.SUPERUSER, UserType.DASHBOARD, UserType.REGULAR]:
         raise HTTPException(
             status_code=403,
             detail="The user doesn't have enough privileges",
