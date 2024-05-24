@@ -112,8 +112,8 @@ async def upload_and_predict(session: SessionDep, current_user: CurrentUser, fil
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/classification-histories", response_model=ClassificationsOut)
-def get_classification_histories(
+@router.get("/classification-histories_current", response_model=ClassificationsOut)
+def get_classification_histories_current(
     session: SessionDep,
     current_user: CurrentUser,
     skip: int = 0,
@@ -137,6 +137,37 @@ def get_classification_histories(
     )
     histories = session.exec(statement).all()
 
+    data = [ClassificationOut(
+        id=history.id,
+        user_id=history.user_id,
+        image_url=history.image_url,
+        prediction=history.prediction
+    ) for history in histories]
+
+    return ClassificationsOut(data=data, count=count)
+
+@router.get("/classification-histories_all", dependencies=[Depends(get_current_user)], response_model=ClassificationsOut)
+def get_classification_histories_all(
+    session: SessionDep,
+    skip: int = 0,
+    limit: int = 100
+) -> Any:
+    """
+    Get Classification History of all Users.
+    """
+    statement = (
+        select(func.count())
+        .select_from(ClassificationHistory)
+    )
+    count = session.exec(statement).one()
+
+    statement = (
+        select(ClassificationHistory)
+        .offset(skip)
+        .limit(limit)
+    )
+    histories = session.exec(statement).all()
+    
     data = [ClassificationOut(
         id=history.id,
         user_id=history.user_id,
