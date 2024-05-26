@@ -24,7 +24,7 @@ export const userApi = createApi({
   endpoints: (builder) => ({
     getUsers: builder.query<IUsersResponse, IPaginationRequest>({
       query: ({ skip, limit }) =>
-        `users?skip=${skip ?? 0}&limit=${limit ?? 1000}`,
+        `users?skip=${skip ?? 0}&limit=${limit ?? 100}`,
       providesTags: ["User"],
     }),
     getUserById: builder.query<IUser, string>({
