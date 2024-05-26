@@ -60,7 +60,10 @@ const Dashboard = (props: Props) => {
     data: userData,
     isLoading: userIsLoading,
     isError: userIsError,
-  } = useGetUsersQuery({});
+  } = useGetUsersQuery({
+    skip: 0,
+    limit: 100,
+  });
 
   const {
     data: faunaData,

@@ -15,8 +15,8 @@ const UsersTable = (props: Props) => {
   const [pageSize, setPageSize] = useState<number>(100);
 
   const { data, isLoading, isError } = useGetUsersQuery({
-    skip: pageSize * (page - 1),
-    limit: pageSize,
+    skip: 0,
+    limit: 100,
   });
 
   const handleEditClick = (row: IUser) => {
