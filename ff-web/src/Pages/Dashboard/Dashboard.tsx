@@ -352,7 +352,7 @@ const Dashboard = (props: Props) => {
                   color="text.secondary"
                   gutterBottom
                 >
-                  Classifier accuracy
+                  Top 5 classified fauna
                 </Typography>
                 {/* <Box> */}
                 <BarChart
