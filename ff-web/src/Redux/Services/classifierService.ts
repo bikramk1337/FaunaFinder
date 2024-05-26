@@ -21,7 +21,7 @@ export const classifierApi = createApi({
       IClassificationHistoryResponse,
       void
     >({
-      query: () => `classifier/classification-histories?skip=0&limit=1000`,
+      query: () => `classifier/classification-histories_all`,
     }),
   }),
 });
